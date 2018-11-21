@@ -43,6 +43,10 @@
 #include "papi_wrapper.h"
 #endif
 
+#if defined(_OPENMP)
+# define PAPI_MULTITHREAD
+#endif
+
 /* By default, collect PAPI counters on thread 0. */
 #ifndef PAPIWRAP_THREAD_MONITOR
 #define PAPIWRAP_THREAD_MONITOR 0
@@ -56,7 +60,7 @@
 int papiwrap_counters_threadid = PAPIWRAP_THREAD_MONITOR;
 double papiwrap_program_total_flops = 0;
 
-#ifdef PAPIWRAP_PAPI
+#ifdef PAPIWRAP
 #include <papi.h>
 #define PAPIWRAP_MAX_NB_PAPI_COUNTERS 96
 char* _papiwrap_eventlist[] = {

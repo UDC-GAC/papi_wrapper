@@ -25,6 +25,10 @@
 #ifndef PAPIWRAP_H
 #define PAPIWRAP_H
 
+#ifndef PAPI_FILE_LIST
+# define "papi_counters.list"
+#endif
+
 extern const unsigned int papiwrap_eventlist[];
 #undef papiwrap_start
 #undef papiwrap_stop
