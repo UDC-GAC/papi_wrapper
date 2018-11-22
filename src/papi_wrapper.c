@@ -34,6 +34,11 @@
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
+#if defined(_OPENMP)
+#include <omp.h>
+#include <pthread.h>
+static int n_threads = 1;
+#endif
 
 #if defined(PAPIWRAP)
 #undef PAPIWRAP
@@ -41,35 +46,35 @@
 #define PAPIWRAP
 #else
 #include "papi_wrapper.h"
-#endif
-
-#if defined(_OPENMP)
-# define PAPI_MULTITHREAD
-#endif
-
 /* By default, collect PAPI counters on thread 0. */
-#ifndef PAPIWRAP_THREAD_MONITOR
+#ifndef papi_wrapper_THREAD_MONITOR
 #define PAPIWRAP_THREAD_MONITOR 0
+int papi_wrapper_counters_threadid = PAPIWRAP_THREAD_MONITOR;
+#endif
 #endif
 
-/* Total LLC cache size. By default 32+MB.. */
-#ifndef PAPIWRAP_CACHE_SIZE_KB
-#define PAPIWRAP_CACHE_SIZE_KB 32770
+/* Total LLC cache size in bytes */
+#ifndef PAPIWRAP_CACHE_SIZE
+#define PAPIWRAP_CACHE_SIZE (1024 * 1024 * 1024)
 #endif
-
-int papiwrap_counters_threadid = PAPIWRAP_THREAD_MONITOR;
-double papiwrap_program_total_flops = 0;
 
 #ifdef PAPIWRAP
 #include <papi.h>
-#define PAPIWRAP_MAX_NB_PAPI_COUNTERS 96
-char* _papiwrap_eventlist[] = {
+#define PAPIWRAP_MAX_COUNTERS 96
+char* _papi_wrapper_eventlist[] = {
 #include "papi_counters.list"
     NULL};
-int papiwrap_eventset;
-int papiwrap_eventlist[PAPIWRAP_MAX_NB_PAPI_COUNTERS];
-long_long papiwrap_values[PAPIWRAP_MAX_NB_PAPI_COUNTERS];
-
+#ifdef PAPI_MULTITHREAD
+int overflow_enabled = 0;
+int* papi_wrapper_eventset;
+// int** papi_wrapper_eventlist;
+int* papi_wrapper_eventlist;
+long_long** papi_wrapper_values;
+#else
+int papi_wrapper_eventset;
+int papi_wrapper_eventlist[PAPIWRAP_MAX_COUNTERS];
+long_long papi_wrapper_values[PAPIWRAP_MAX_COUNTERS];
+#endif
 #endif
 
 /**
@@ -79,29 +84,34 @@ long_long papiwrap_values[PAPIWRAP_MAX_NB_PAPI_COUNTERS];
  * @param allocation_size the size from p to flush
  * @note this flush is broadcast and extracted
  */
-void
-intel_clflush(volatile void *p, unsigned int allocation_size)
-{
-    const size_t cache_line = 64;
-    const char * cp         = (const char *)p;
-    size_t       i          = 0;
+void intel_clflush(volatile void* p, unsigned int allocation_size) {
+  const size_t cache_line = 64;
+  const char* cp = (const char*)p;
+  size_t i = 0;
 
-    if (p == NULL || allocation_size <= 0) return;
+  if (p == NULL || allocation_size <= 0) return;
 
-    for (i = 0; i < allocation_size; i += cache_line)
-    {
-        asm volatile("clflush (%0)\n\t" : : "r"(&cp[i]) : "memory");
-    }
+  for (i = 0; i < allocation_size; i += cache_line) {
+    asm volatile("clflush (%0)\n\t" : : "r"(&cp[i]) : "memory");
+  }
 
-    /* according to Intel 64 and IA-32 Architectures optimization reference
-     * manual 7.4.9, this instruction is no longer required; but just in case...
-     */
-    asm volatile("sfence\n\t" : : : "memory");
+  /* according to Intel 64 and IA-32 Architectures optimization reference
+   * manual 7.4.9, this instruction is no longer required; but just in case...
+   */
+  asm volatile("sfence\n\t" : : : "memory");
 }
 
+void papi_wrapper_prepare_instruments() {
+  int cache_elemns = PAPIWRAP_CACHE_SIZE / sizeof(double);
+  double* flush = (double*)calloc(cache_elemns, sizeof(double));
+#if defined(__x86_64)
+  intel_clflush(flush, cache_elemns * sizeof(double));
+#endif
+  free(flush);
+}
 
 /**
- * @brief Display PAPI errors 
+ * @brief Display PAPI errors
  *
  * @param file File name
  * @param line Line where the error occurred
@@ -109,10 +119,8 @@ intel_clflush(volatile void *p, unsigned int allocation_size)
  * @param retval Value returned
  * @note based on test_fail in papi_utils.c
  */
-static void
-PAPI_WRAP_error(const char* file, int line, const char* call,
-                      int retval) 
-{
+static void PAPI_WRAP_error(const char* file, int line, const char* call,
+                            int retval) {
   char buf[128];
 
   memset(buf, '\0', sizeof(buf));
@@ -146,41 +154,34 @@ PAPI_WRAP_error(const char* file, int line, const char* call,
   exit(1);
 }
 
-
 /**
  * @brief Handling event overflow
  *
  * @param EventSet Event set which produces the overflow
- * @param address 
+ * @param address
  * @param overflow_vector
- * @param context 
+ * @param context
  */
-void
-papi_overflow_handler(int EventSet, void* address,
-                           long_long overflow_vector, void* context) 
-{
-}
-
+void papi_overflow_handler(int EventSet, void* address,
+                           long_long overflow_vector, void* context) {}
 
 /**
  * @brief PAPI initilization
  *
  * @note This function must be called
  */
-void 
-papiwrap_init()
-{
+void papi_wrapper_init() {
 #ifdef _OPENMP
 #pragma omp parallel
   {
 #ifndef PAPI_MULTITHREAD
 #pragma omp master
     {
-      if (omp_get_max_threads() < papiwrap_counters_threadid)
-        papiwrap_counters_threadid = omp_get_max_threads() - 1;
+      if (omp_get_max_threads() < papi_wrapper_counters_threadid)
+        papi_wrapper_counters_threadid = omp_get_max_threads() - 1;
     }
 #pragma omp barrier
-    if (omp_get_thread_num() == papiwrap_counters_threadid) {
+    if (omp_get_thread_num() == papi_wrapper_counters_threadid) {
 #endif
 #endif
 
@@ -192,42 +193,55 @@ papiwrap_init()
           PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_library_init", retval);
         if ((retval = PAPI_thread_init(pthread_self)) != PAPI_OK)
           PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_library_init", retval);
+        n_threads = omp_get_num_threads();
+        papi_wrapper_eventset = (int*)malloc(sizeof(int) * n_threads);
+        // papi_wrapper_eventlist = (int**)malloc(sizeof(int*) * n_threads);
+        papi_wrapper_eventlist =
+            (int*)malloc(sizeof(int) * PAPIWRAP_MAX_COUNTERS);
+        papi_wrapper_values =
+            (long_long**)malloc(sizeof(long_long*) * n_threads);
+        int n_thread = 0;
+        for (n_thread = 0; n_thread < n_threads; ++n_thread) {
+          papi_wrapper_values[n_thread] =
+              (long_long*)malloc(sizeof(long_long) * PAPIWRAP_MAX_COUNTERS);
+        }
       }
 #pragma omp barrier
 #pragma omp critical
       {
         int n_thread = omp_get_thread_num();
         int retval;
-        papiwrap_eventset[n_thread] = PAPI_NULL;
-        if ((retval = PAPI_create_eventset(
-                 &papiwrap_eventset[n_thread])) != PAPI_OK)
+        papi_wrapper_eventset[n_thread] = PAPI_NULL;
+        if ((retval = PAPI_create_eventset(&papi_wrapper_eventset[n_thread])) !=
+            PAPI_OK)
           PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_create_eventset", retval);
         int k;
-        for (k = 0; _papiwrap_eventlist[k]; ++k) {
+        for (k = 0; _papi_wrapper_eventlist[k]; ++k) {
           if ((retval = PAPI_event_name_to_code(
-                   (char*)_papiwrap_eventlist[k],
-                   &(papiwrap_eventlist[n_thread][k]))) != PAPI_OK)
-            PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_event_name_to_code", retval);
+                   (char*)_papi_wrapper_eventlist[k],
+                   &(papi_wrapper_eventlist[k]))) != PAPI_OK)
+            PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_event_name_to_code",
+                            retval);
         }
-        papiwrap_eventlist[n_thread][k] = 0;
+        papi_wrapper_eventlist[k] = 0;
       }
 #else
   int retval;
-  papiwrap_eventset = PAPI_NULL;
+  papi_wrapper_eventset = PAPI_NULL;
   if ((retval = PAPI_library_init(PAPI_VER_CURRENT)) != PAPI_VER_CURRENT)
     PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_library_init", retval);
   if ((retval = PAPI_thread_init(pthread_self)) != PAPI_OK)
     PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_library_init", retval);
-  if ((retval = PAPI_create_eventset(&papiwrap_eventset)) != PAPI_OK)
+  if ((retval = PAPI_create_eventset(&papi_wrapper_eventset)) != PAPI_OK)
     PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_create_eventset", retval);
   int k;
-  for (k = 0; _papiwrap_eventlist[k]; ++k) {
-    if ((retval = PAPI_event_name_to_code(_papiwrap_eventlist[k],
-                                          &(papiwrap_eventlist[k]))) !=
+  for (k = 0; _papi_wrapper_eventlist[k]; ++k) {
+    if ((retval = PAPI_event_name_to_code(_papi_wrapper_eventlist[k],
+                                          &(papi_wrapper_eventlist[k]))) !=
         PAPI_OK)
       PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_event_name_to_code", retval);
   }
-  papiwrap_eventlist[k] = 0;
+  papi_wrapper_eventlist[k] = 0;
 #endif
 #ifdef _OPENMP
 #ifndef PAPI_MULTITHREAD
@@ -243,14 +257,12 @@ papiwrap_init()
  *
  * @note This function must be called to free components
  */
-void
-papiwrap_close()
-{
+void papi_wrapper_close() {
 #ifdef _OPENMP
 #pragma omp parallel
   {
 #ifndef PAPI_MULTITHREAD
-    if (omp_get_thread_num() == papiwrap_counters_threadid) {
+    if (omp_get_thread_num() == papi_wrapper_counters_threadid) {
 #endif
 #endif
 #ifdef PAPI_MULTITHREAD
@@ -258,14 +270,14 @@ papiwrap_close()
       {
         int retval;
         int n_thread = omp_get_thread_num();
-        //        if ((retval = PAPI_destroy_eventset(
-        //                 &papiwrap_eventset[n_thread])) != PAPI_OK)
-        //          PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_destroy_eventset",
-        //          retval);
+        if ((retval = PAPI_destroy_eventset(
+                 &papi_wrapper_eventset[n_thread])) != PAPI_OK)
+          PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_destroy_eventset", retval);
+        free(papi_wrapper_eventset);
       }
 #else
   int retval;
-  if ((retval = PAPI_destroy_eventset(&papiwrap_eventset)) != PAPI_OK)
+  if ((retval = PAPI_destroy_eventset(&papi_wrapper_eventset)) != PAPI_OK)
     PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_destroy_eventset", retval);
 #endif
 #pragma omp master
@@ -286,18 +298,12 @@ papiwrap_close()
  * @brief Init all counters
  *
  */
-int
-papiwrap_start_counter(int evid)
-{
-#ifndef POLYBENCH_NO_FLUSH_CACHE
-  polybench_flush_cache();
-#endif
-
+int papi_wrapper_start_counter(int evid) {
 #ifdef _OPENMP
 #pragma omp parallel
   {
 #ifndef PAPI_MULTITHREAD
-    if (omp_get_thread_num() == papiwrap_counters_threadid) {
+    if (omp_get_thread_num() == papi_wrapper_counters_threadid) {
 #endif
 #endif
 #ifdef PAPI_MULTITHREAD
@@ -305,34 +311,33 @@ papiwrap_start_counter(int evid)
       int retval = 1;
       char descr[PAPI_MAX_STR_LEN];
       PAPI_event_info_t evinfo;
-      PAPI_event_code_to_name(papiwrap_eventlist[n_thread][evid], descr);
-      if (PAPI_add_event(papiwrap_eventset[n_thread],
-                         papiwrap_eventlist[n_thread][evid]) != PAPI_OK)
+      PAPI_event_code_to_name(papi_wrapper_eventlist[evid], descr);
+      if (PAPI_add_event(papi_wrapper_eventset[n_thread],
+                         papi_wrapper_eventlist[evid]) != PAPI_OK)
         PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_add_event", 1);
-      if (PAPI_get_event_info(papiwrap_eventlist[n_thread][evid],
-                              &evinfo) != PAPI_OK)
+      if (PAPI_get_event_info(papi_wrapper_eventlist[evid], &evinfo) != PAPI_OK)
         PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_get_event_info", retval);
       if (!(overflow_enabled)) {
-        if ((retval = PAPI_overflow(papiwrap_eventset[n_thread],
+        if ((retval = PAPI_overflow(papi_wrapper_eventset[n_thread],
                                     PAPI_TOT_CYC, 10000000, 0,
                                     papi_overflow_handler)) != PAPI_OK) {
           PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_overflow", retval);
         }
         overflow_enabled = 1;
       }
-      if ((retval = PAPI_start(papiwrap_eventset[n_thread])) != PAPI_OK)
+      if ((retval = PAPI_start(papi_wrapper_eventset[n_thread])) != PAPI_OK)
         PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_start", retval);
 #else
   int retval = 1;
   char descr[PAPI_MAX_STR_LEN];
   PAPI_event_info_t evinfo;
-  PAPI_event_code_to_name(papiwrap_eventlist[evid], descr);
-  if (PAPI_add_event(papiwrap_eventset, papiwrap_eventlist[evid]) !=
+  PAPI_event_code_to_name(papi_wrapper_eventlist[evid], descr);
+  if (PAPI_add_event(papi_wrapper_eventset, papi_wrapper_eventlist[evid]) !=
       PAPI_OK)
     PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_add_event", 1);
-  if (PAPI_get_event_info(papiwrap_eventlist[evid], &evinfo) != PAPI_OK)
+  if (PAPI_get_event_info(papi_wrapper_eventlist[evid], &evinfo) != PAPI_OK)
     PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_get_event_info", retval);
-  if ((retval = PAPI_start(papiwrap_eventset)) != PAPI_OK)
+  if ((retval = PAPI_start(papi_wrapper_eventset)) != PAPI_OK)
     PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_start", retval);
 #endif
 #ifdef _OPENMP
@@ -350,14 +355,12 @@ papiwrap_start_counter(int evid)
  *
  * @param evid Counter id
  */
-void
-papiwrap_stop_counter(int evid)
-{
+void papi_wrapper_stop_counter(int evid) {
 #ifdef _OPENMP
 #pragma omp parallel
   {
 #ifndef PAPI_MULTITHREAD
-    if (omp_get_thread_num() == papiwrap_counters_threadid) {
+    if (omp_get_thread_num() == papi_wrapper_counters_threadid) {
 #endif
 #endif
 #ifdef PAPI_MULTITHREAD
@@ -365,34 +368,29 @@ papiwrap_stop_counter(int evid)
       int n_thread = omp_get_thread_num();
       long long values[1][10];
       values[0][0] = 0;
-      //      if ((retval = PAPI_read(papiwrap_eventset, &values[0])) !=
-      //      PAPI_OK)
-      //        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_read", retval);
 
-      if ((retval = PAPI_stop(papiwrap_eventset[n_thread], values[0])) !=
+      if ((retval = PAPI_stop(papi_wrapper_eventset[n_thread], values[0])) !=
           PAPI_OK)
         PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_stop", retval);
-      // printf("%2d:value[%2d] \t%llu\n", n_thread, 0, values[0][0]);
-      papiwrap_values[n_thread][evid] = values[0][0];
+      papi_wrapper_values[n_thread][evid] = values[0][0];
 
-      if ((retval = PAPI_remove_event(
-               papiwrap_eventset[n_thread],
-               papiwrap_eventlist[n_thread][evid])) != PAPI_OK)
+      if ((retval = PAPI_remove_event(papi_wrapper_eventset[n_thread],
+                                      papi_wrapper_eventlist[evid])) != PAPI_OK)
         PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_remove_event", retval);
 #else
   int retval;
   long_long values[1];
   values[0] = 0;
-  if ((retval = PAPI_read(papiwrap_eventset, &values[0])) != PAPI_OK)
+  if ((retval = PAPI_read(papi_wrapper_eventset, &values[0])) != PAPI_OK)
     PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_read", retval);
 
-  if ((retval = PAPI_stop(papiwrap_eventset, NULL)) != PAPI_OK)
+  if ((retval = PAPI_stop(papi_wrapper_eventset, NULL)) != PAPI_OK)
     PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_stop", retval);
 
-  papiwrap_values[evid] = values[0];
+  papi_wrapper_values[evid] = values[0];
 
-  if ((retval = PAPI_remove_event(papiwrap_eventset,
-                                  papiwrap_eventlist[evid])) != PAPI_OK)
+  if ((retval = PAPI_remove_event(papi_wrapper_eventset,
+                                  papi_wrapper_eventlist[evid])) != PAPI_OK)
     PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_remove_event", retval);
 #endif
 #ifdef _OPENMP
@@ -408,39 +406,45 @@ papiwrap_stop_counter(int evid)
  * @brief Printing the values of the counters
  *
  */
-void
-papiwrap_print()
-{
+void papi_wrapper_print() {
   int verbose = 0;
 #ifdef _OPENMP
 #ifndef PAPI_MULTITHREAD
 #pragma omp parallel
   {
-    if (omp_get_thread_num() == papiwrap_counters_threadid) {
-#endif
-#ifdef papiwrap_VERBOSE
+    if (omp_get_thread_num() == papi_wrapper_counters_threadid) {
+#ifdef PAPI_WRAPPER_VERBOSE
       verbose = 1;
 #endif
-      if (verbose) printf("On thread %d:\n", papiwrap_counters_threadid);
+      if (verbose) printf("On thread %d:\n", papi_wrapper_counters_threadid);
+#endif
 #endif
 #ifdef PAPI_MULTITHREAD
+      int n_thread = 0;
 #pragma omp for ordered schedule(static, 1)
-      for (int n_thread = 0; n_thread < N_CORES; ++n_thread) {
+      for (n_thread = 0; n_thread < n_threads; ++n_thread) {
         int evid;
         printf("PAPI thread %2d\t", n_thread);
-        for (evid = 0; papiwrap_eventlist[n_thread][evid] != 0; ++evid) {
-          if (verbose) printf("%s=", _papiwrap_eventlist[evid]);
-          printf("%llu ", papiwrap_values[n_thread][evid]);
+        for (evid = 0; papi_wrapper_eventlist[evid] != 0; ++evid) {
+          if (verbose) printf("%s=", _papi_wrapper_eventlist[evid]);
+          printf("%llu ", papi_wrapper_values[n_thread][evid]);
           if (verbose) printf("\n");
         }
         printf("\n");
+        free(papi_wrapper_values[n_thread]);
+      }
+#pragma omp barrier
+#pragma omp master
+      {
+        free(papi_wrapper_values);
+        free(papi_wrapper_eventlist);
       }
 #else
   int evid;
-  printf("PAPI thread %d => ", papiwrap_counters_threadid);
-  for (evid = 0; papiwrap_eventlist[evid] != 0; ++evid) {
-    if (verbose) printf("%s=", _papiwrap_eventlist[evid]);
-    printf("%llu ", papiwrap_values[evid]);
+  printf("PAPI thread %d => ", papi_wrapper_counters_threadid);
+  for (evid = 0; papi_wrapper_eventlist[evid] != 0; ++evid) {
+    if (verbose) printf("%s=", _papi_wrapper_eventlist[evid]);
+    printf("%llu ", papi_wrapper_values[evid]);
     if (verbose) printf("\n");
   }
   printf("\n");
@@ -453,5 +457,3 @@ papiwrap_print()
 #endif
 #endif
 }
-
-
