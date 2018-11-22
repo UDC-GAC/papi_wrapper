@@ -26,30 +26,36 @@
 #define papi_wrapper_H
 
 #ifndef PAPI_FILE_LIST
-#define PAPI_FILE_LIST "papi_counters.list"
+#    define PAPI_FILE_LIST "papi_counters.list"
 #endif
 
 // extern int **papi_wrapper_eventlist;
 extern int *papi_wrapper_eventlist;
 #define papi_wrapper_set_thread_report(x) papi_wrapper_counters_threadid = x;
 #define papi_wrapper_start_instruments                        \
-  papi_wrapper_prepare_instruments();                         \
-  papi_wrapper_init();                                        \
-  int evid;                                                   \
-  for (evid = 0; papi_wrapper_eventlist[evid] != 0; evid++) { \
-    if (papi_wrapper_start_counter(evid)) continue;
+    papi_wrapper_prepare_instruments();                       \
+    papi_wrapper_init();                                      \
+    int evid;                                                 \
+    for (evid = 0; papi_wrapper_eventlist[evid] != 0; evid++) \
+    {                                                         \
+        if (papi_wrapper_start_counter(evid)) continue;
 
 #define papi_wrapper_stop_instruments \
-  papi_wrapper_stop_counter(evid);    \
-  }                                   \
-  papi_wrapper_close();
+    papi_wrapper_stop_counter(evid);  \
+    }                                 \
+    papi_wrapper_close();
 
 #define papi_wrapper_print_instruments papi_wrapper_print();
 
-extern int papi_wrapper_start_counter(int evid);
-extern void papi_wrapper_stop_counter(int evid);
-extern void papi_wrapper_init();
-extern void papi_wrapper_close();
-extern void papi_wrapper_print();
+extern int
+papi_wrapper_start_counter(int evid);
+extern void
+papi_wrapper_stop_counter(int evid);
+extern void
+papi_wrapper_init();
+extern void
+papi_wrapper_close();
+extern void
+papi_wrapper_print();
 
 #endif /* !papi_wrapper_H */
