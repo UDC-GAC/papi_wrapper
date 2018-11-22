@@ -10,17 +10,17 @@ This interface also works for multithreaded programs using OpenMP. See [Usage](#
 It is only needed to rewrite our code as:
 
 ```
-#include "papi_wrapper.h"
+#include <papi_wrapper.h>
 ...
-papiwrap_start /* starts automatically PAPI counters */
+papiwrap_start_instruments /* starts automatically PAPI counters */
 
 /* region of interest (ROI) to measure */
 
-papiwrap_stop /* stop counting */
-papiwrap_print /* print results */
+papiwrap_stop_instruments /* stop counting */
+papiwrap_print_instruments /* print results */
 ```
 
-This way, it is only needed to add the header `#include "papi_wrapper.h"` to the source code and compile with `-DPAPIWRAP -I/source/to/papi-wrapper /source/to/papi-wrapper/papi_wrapper.c`.
+This way, it is only needed to add the header `#include <papi_wrapper.h>` to the source code and compile with `-DPAPIWRAP -I/source/to/papi-wrapper /source/to/papi-wrapper/papi_wrapper.c`.
 
 It is also to specify a list of the program counters (`-DPAPI_FILE_LIST=<file>`); by default: `papi_counters.list` (see its format inside the file).
 
@@ -28,8 +28,8 @@ It is also to specify a list of the program counters (`-DPAPI_FILE_LIST=<file>`)
 
 Most remarkable options are:
 
- * `-DPAPI_MULTITHREAD` -- enabled by default when compiling with `-fopenmp`.
- * `-DPAPI_VERBOSE` -- disanabled by default. Displays each counter in one line with its name.
+ * `-DPAPI_MULTITHREAD` -- disabled by default. If not defined, only `PAPIWRAP_THREAD_MONITOR` will count events.
+ * `-DPAPI_VERBOSE` -- disabled by default. Displays each counter in one line with its name.
  * `-DSAMPLING_RATE=<N>` *future release* -- disabled by default. Allows to modify the sampling rate by triggering an overflow. *N* stands for number of events occurred.
 
 ## Credits
