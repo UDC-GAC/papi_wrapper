@@ -42,18 +42,18 @@ static int n_threads = N_CORES;
 #    else
 static int n_threads = 1;
 #    endif
+#endif
 
-#    if defined(PAPIWRAP)
-#        undef PAPIWRAP
-#        include "papi_wrapper.h"
-#        define PAPIWRAP
-#    else
-#        include "papi_wrapper.h"
+#if defined(PAPIWRAP)
+#    undef PAPIWRAP
+#    include "papi_wrapper.h"
+#    define PAPIWRAP
+#else
+#    include "papi_wrapper.h"
 /* By default, collect PAPI counters on thread 0. */
-#        ifndef papi_wrapper_THREAD_MONITOR
-#            define PAPIWRAP_THREAD_MONITOR 0
-int       papi_wrapper_counters_threadid = PAPIWRAP_THREAD_MONITOR;
-#        endif
+#    ifndef papi_wrapper_THREAD_MONITOR
+#        define PAPIWRAP_THREAD_MONITOR 0
+int papi_wrapper_counters_threadid = PAPIWRAP_THREAD_MONITOR;
 #    endif
 #endif
 
@@ -62,6 +62,7 @@ int       papi_wrapper_counters_threadid = PAPIWRAP_THREAD_MONITOR;
 #    define PAPIWRAP_CACHE_MB 1
 #endif
 
+/* In bytes */
 #ifndef PAPIWRAP_CACHE_SIZE
 #    define PAPIWRAP_CACHE_SIZE PAPIWRAP_CACHE_MB *(1024 * 1024 * 1024)
 #endif
@@ -78,9 +79,9 @@ int *       papi_wrapper_eventset;
 int *       papi_wrapper_eventlist;
 long_long **papi_wrapper_values;
 #    else
-int       papi_wrapper_eventset;
-int       papi_wrapper_eventlist[PAPIWRAP_MAX_COUNTERS];
-long_long papi_wrapper_values[PAPIWRAP_MAX_COUNTERS];
+int        papi_wrapper_eventset;
+int        papi_wrapper_eventlist[PAPIWRAP_MAX_COUNTERS];
+long_long  papi_wrapper_values[PAPIWRAP_MAX_COUNTERS];
 #    endif
 #endif
 
@@ -378,8 +379,8 @@ papi_wrapper_start_counter(int evid)
                 != PAPI_OK)
                 PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_start", retval);
 #else
-    int retval = 1;
-    char descr[PAPI_MAX_STR_LEN];
+    int               retval = 1;
+    char              descr[PAPI_MAX_STR_LEN];
     PAPI_event_info_t evinfo;
     PAPI_event_code_to_name(papi_wrapper_eventlist[evid], descr);
     if (PAPI_add_event(papi_wrapper_eventset, papi_wrapper_eventlist[evid])
@@ -433,7 +434,7 @@ papi_wrapper_stop_counter(int evid)
                 PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_remove_event",
                                 retval);
 #else
-    int retval;
+    int       retval;
     long_long values[1];
     values[0] = 0;
     if ((retval = PAPI_read(papi_wrapper_eventset, &values[0])) != PAPI_OK)

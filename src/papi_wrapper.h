@@ -29,7 +29,6 @@
 #    define PAPI_FILE_LIST "papi_counters.list"
 #endif
 
-// extern int **papi_wrapper_eventlist;
 extern int *papi_wrapper_eventlist;
 #define papi_wrapper_set_thread_report(x) papi_wrapper_counters_threadid = x;
 #define papi_wrapper_start_instruments                        \
