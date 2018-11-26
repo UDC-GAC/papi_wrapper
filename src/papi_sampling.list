@@ -1,0 +1,10 @@
+// Counters must be delimited with ',' including the last one.
+// C/C++ comments are allowed.
+// Both native and standard PAPI events are supported.
+//"PAPI_TOT_CYC", // total cycles 
+//"PAPI_TOT_INS", // total instructions
+//"PAPI_L1_DCA", // data cache accesses l1 
+//"PAPI_L1_DCM", // data cache misses l1 
+//"PAPI_L2_TCA", // data cache accesses l2 
+10000,1000,1000,1000,
+

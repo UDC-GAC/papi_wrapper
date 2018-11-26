@@ -22,39 +22,63 @@
  *
  * Authors: Marcos Horro
  */
-#ifndef papi_wrapper_H
-#define papi_wrapper_H
+#ifndef PAPI_WRAPPER_H
+#define PAPI_WRAPPER_H
 
 #ifndef PAPI_FILE_LIST
 #    define PAPI_FILE_LIST "papi_counters.list"
 #endif
 
-extern int *papi_wrapper_eventlist;
-#define papi_wrapper_set_thread_report(x) papi_wrapper_counters_threadid = x;
-#define papi_wrapper_start_instruments                        \
-    papi_wrapper_prepare_instruments();                       \
-    papi_wrapper_init();                                      \
-    int evid;                                                 \
-    for (evid = 0; papi_wrapper_eventlist[evid] != 0; evid++) \
-    {                                                         \
-        if (papi_wrapper_start_counter(evid)) continue;
+#ifdef PW_SAMPLING
+#    ifndef PAPI_FILE_SAMPLING
+#        define PAPI_FILE_SAMPLING "papi_sampling.list"
+#    endif
+#endif
 
-#define papi_wrapper_stop_instruments \
-    papi_wrapper_stop_counter(evid);  \
-    }                                 \
-    papi_wrapper_close();
+#define PW_MAX_COUNTERS 96
 
-#define papi_wrapper_print_instruments papi_wrapper_print();
+typedef struct PW_thread_info
+{
+    int        pw_eventset;
+    long long *pw_values;
+#ifdef PW_SAMPLING
+    long long *pw_overflows;
+#endif
+} PW_thread_info_t;
 
+/* useful macros */
+#define PW_VALUES(n_thread, evid) (PW_thread[n_thread].pw_values[evid])
+#define PW_OVRFLW(n_threadi, evid) (PW_thread[n_thread].pw_overflows[evid])
+#define PW_EVTSET(n_thread) (PW_thread[n_thread].pw_eventset)
+
+extern PW_thread_info_t *PW_thread;
+extern int *             pw_eventlist;
+#define pw_set_thread_report(x) pw_counters_threadid = x;
+#define pw_start_instruments                        \
+    pw_prepare_instruments();                       \
+    pw_init();                                      \
+    int evid;                                       \
+    for (evid = 0; pw_eventlist[evid] != 0; evid++) \
+    {                                               \
+        if (pw_start_counter(evid)) continue;
+
+#define pw_stop_instruments \
+    pw_stop_counter(evid);  \
+    }                       \
+    pw_close();
+
+#define pw_print_instruments pw_print();
+
+/* function declarations */
 extern int
-papi_wrapper_start_counter(int evid);
+pw_start_counter(int evid);
 extern void
-papi_wrapper_stop_counter(int evid);
+pw_stop_counter(int evid);
 extern void
-papi_wrapper_init();
+pw_init();
 extern void
-papi_wrapper_close();
+pw_close();
 extern void
-papi_wrapper_print();
+pw_print();
 
-#endif /* !papi_wrapper_H */
+#endif /* !PAPI_WRAPPER_H */

@@ -12,17 +12,17 @@ It is only needed to rewrite our code as:
 ```
 #include <papi_wrapper.h>
 ...
-papiwrap_start_instruments /* starts automatically PAPI counters */
+pw_start_instruments /* starts automatically PAPI counters */
 
 /* region of interest (ROI) to measure */
 
-papiwrap_stop_instruments /* stop counting */
-papiwrap_print_instruments /* print results */
+pw_stop_instruments /* stop counting */
+pw_print_instruments /* print results */
 ```
 
-This way, it is only needed to add the header `#include <papi_wrapper.h>` to the source code and compile with `-DPAPIWRAP -I/source/to/papi-wrapper /source/to/papi-wrapper/papi_wrapper.c`.
+This way, it is only needed to add the header `#include <papi_wrapper.h>` to the source code and compile with `-I/source/to/papi-wrapper /source/to/papi-wrapper/papi_wrapper.c`.
 
-It is also to specify a list of the program counters (`-DPAPI_FILE_LIST=<file>`); by default: `papi_counters.list` (see its format inside the file).
+You can also also specify a list of PAPI hardware counters using `-DPAPI_FILE_LIST=<file>`. Default value is: `papi_counters.list` (see its format inside the file).
 
 ## Options
 
