@@ -35,7 +35,7 @@
 
 /* Default domain (-DPW_DOM) for each EventSet */
 #ifndef PW_DOM
-#    define PW_DOM PAPI_DOM_MIN
+#    define PW_DOM PAPI_DOM_ALL
 #endif
 
 #define PW_NUM_EVTSET 10
@@ -72,7 +72,7 @@ typedef struct PW_thread_info
         (PW_thread[n_thread].pw_overflows[evid] = 0)
 #endif
 
-/* Some other options */
+/* File configurations */
 #ifndef PAPI_FILE_LIST
 #    define PAPI_FILE_LIST "papi_counters.list"
 #endif
