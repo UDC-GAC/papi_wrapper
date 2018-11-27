@@ -99,42 +99,54 @@ Include dependency graph for papi_wrapper.c:</div>
 Macros</h2></td></tr>
 <tr class="memitem:a369266c24eacffb87046522897a570d5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a369266c24eacffb87046522897a570d5">_GNU_SOURCE</a></td></tr>
 <tr class="separator:a369266c24eacffb87046522897a570d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0756fd338a995ca43de698d3111083e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#ad0756fd338a995ca43de698d3111083e">PAPIWRAP_THREAD_MONITOR</a>&#160;&#160;&#160;0</td></tr>
-<tr class="separator:ad0756fd338a995ca43de698d3111083e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5afb323b9bfc82a3057fc35542d719d2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a5afb323b9bfc82a3057fc35542d719d2">PAPIWRAP_CACHE_MB</a>&#160;&#160;&#160;1</td></tr>
-<tr class="separator:a5afb323b9bfc82a3057fc35542d719d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f42e67852beb00e7a95d58d07e19907"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a3f42e67852beb00e7a95d58d07e19907">PAPIWRAP_CACHE_SIZE</a>&#160;&#160;&#160;<a class="el" href="papi__wrapper_8c.html#a5afb323b9bfc82a3057fc35542d719d2">PAPIWRAP_CACHE_MB</a> *(1024 * 1024 * 1024)</td></tr>
-<tr class="separator:a3f42e67852beb00e7a95d58d07e19907"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab78bbf669908dd88451aa417bcf75336"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#ab78bbf669908dd88451aa417bcf75336">PW_THREAD_MONITOR</a>&#160;&#160;&#160;0</td></tr>
+<tr class="separator:ab78bbf669908dd88451aa417bcf75336"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff41a0b1089a80b4987ffae1868e61da"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#aff41a0b1089a80b4987ffae1868e61da">PW_CACHE_MB</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:aff41a0b1089a80b4987ffae1868e61da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62d4bd0fa45faf7d641785f1408526d1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a62d4bd0fa45faf7d641785f1408526d1">PW_CACHE_SIZE</a>&#160;&#160;&#160;<a class="el" href="papi__wrapper_8c.html#aff41a0b1089a80b4987ffae1868e61da">PW_CACHE_MB</a> *(1024 * 1024 * 1024)</td></tr>
+<tr class="separator:a62d4bd0fa45faf7d641785f1408526d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:af06c578ac86f905a07212b41cd83e488"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#af06c578ac86f905a07212b41cd83e488">intel_clflush</a> (volatile void *p, unsigned int allocation_size)</td></tr>
 <tr class="separator:af06c578ac86f905a07212b41cd83e488"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f7ab1e4614682722952df8a9eda21af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a9f7ab1e4614682722952df8a9eda21af">papi_wrapper_prepare_instruments</a> ()</td></tr>
-<tr class="separator:a9f7ab1e4614682722952df8a9eda21af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ef368add7529127cc774ef53c95dfd3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a3ef368add7529127cc774ef53c95dfd3">papi_overflow_handler</a> (int EventSet, void *address, long_long overflow_vector, void *context)</td></tr>
-<tr class="memdesc:a3ef368add7529127cc774ef53c95dfd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handling event overflow.  <a href="#a3ef368add7529127cc774ef53c95dfd3">More...</a><br /></td></tr>
-<tr class="separator:a3ef368add7529127cc774ef53c95dfd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7dd9ae39e9c34988539c51478fa1ca2f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a7dd9ae39e9c34988539c51478fa1ca2f">papi_wrapper_init</a> ()</td></tr>
-<tr class="memdesc:a7dd9ae39e9c34988539c51478fa1ca2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">PAPI initilization.  <a href="#a7dd9ae39e9c34988539c51478fa1ca2f">More...</a><br /></td></tr>
-<tr class="separator:a7dd9ae39e9c34988539c51478fa1ca2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb269433ce1956939251ba14162b284f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#afb269433ce1956939251ba14162b284f">papi_wrapper_close</a> ()</td></tr>
-<tr class="memdesc:afb269433ce1956939251ba14162b284f"><td class="mdescLeft">&#160;</td><td class="mdescRight">PAPI close.  <a href="#afb269433ce1956939251ba14162b284f">More...</a><br /></td></tr>
-<tr class="separator:afb269433ce1956939251ba14162b284f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09100cc4cbc313132e6a083b1f298197"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a09100cc4cbc313132e6a083b1f298197">papi_wrapper_start_counter</a> (int evid)</td></tr>
-<tr class="memdesc:a09100cc4cbc313132e6a083b1f298197"><td class="mdescLeft">&#160;</td><td class="mdescRight">Init all counters.  <a href="#a09100cc4cbc313132e6a083b1f298197">More...</a><br /></td></tr>
-<tr class="separator:a09100cc4cbc313132e6a083b1f298197"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2cedce0bc47ca537bc39bebc8e74e243"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a2cedce0bc47ca537bc39bebc8e74e243">papi_wrapper_stop_counter</a> (int evid)</td></tr>
-<tr class="memdesc:a2cedce0bc47ca537bc39bebc8e74e243"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop all the counters.  <a href="#a2cedce0bc47ca537bc39bebc8e74e243">More...</a><br /></td></tr>
-<tr class="separator:a2cedce0bc47ca537bc39bebc8e74e243"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4d31cde9454bb1ae7f4173a27e8c24b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#ac4d31cde9454bb1ae7f4173a27e8c24b">papi_wrapper_print</a> ()</td></tr>
-<tr class="memdesc:ac4d31cde9454bb1ae7f4173a27e8c24b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Printing the values of the counters.  <a href="#ac4d31cde9454bb1ae7f4173a27e8c24b">More...</a><br /></td></tr>
-<tr class="separator:ac4d31cde9454bb1ae7f4173a27e8c24b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c33f9c913f42817b24937d0fbe0fb70"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a5c33f9c913f42817b24937d0fbe0fb70">pw_prepare_instruments</a> ()</td></tr>
+<tr class="memdesc:a5c33f9c913f42817b24937d0fbe0fb70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flushes cache by using assembly instructions and calloc.  <a href="#a5c33f9c913f42817b24937d0fbe0fb70">More...</a><br /></td></tr>
+<tr class="separator:a5c33f9c913f42817b24937d0fbe0fb70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7b2fa3d2622a318d41a0976d74a37b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#af7b2fa3d2622a318d41a0976d74a37b3">papi_overflow_handler</a> (int EventSet, void *address, long long overflow_vector, void *context)</td></tr>
+<tr class="memdesc:af7b2fa3d2622a318d41a0976d74a37b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handling event overflow.  <a href="#af7b2fa3d2622a318d41a0976d74a37b3">More...</a><br /></td></tr>
+<tr class="separator:af7b2fa3d2622a318d41a0976d74a37b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae214cf2aaceabf56fa6f7f2efd451e3e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#ae214cf2aaceabf56fa6f7f2efd451e3e">pw_set_opts</a> (int n_thread, int evid)</td></tr>
+<tr class="memdesc:ae214cf2aaceabf56fa6f7f2efd451e3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">PAPI set options.  <a href="#ae214cf2aaceabf56fa6f7f2efd451e3e">More...</a><br /></td></tr>
+<tr class="separator:ae214cf2aaceabf56fa6f7f2efd451e3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf7527c4712d6da3c3f18da35a9cf76f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#abf7527c4712d6da3c3f18da35a9cf76f">pw_init</a> ()</td></tr>
+<tr class="memdesc:abf7527c4712d6da3c3f18da35a9cf76f"><td class="mdescLeft">&#160;</td><td class="mdescRight">PAPI initilization.  <a href="#abf7527c4712d6da3c3f18da35a9cf76f">More...</a><br /></td></tr>
+<tr class="separator:abf7527c4712d6da3c3f18da35a9cf76f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f49d6190f5c8664155e5176598168af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a3f49d6190f5c8664155e5176598168af">pw_close</a> ()</td></tr>
+<tr class="memdesc:a3f49d6190f5c8664155e5176598168af"><td class="mdescLeft">&#160;</td><td class="mdescRight">PAPI close.  <a href="#a3f49d6190f5c8664155e5176598168af">More...</a><br /></td></tr>
+<tr class="separator:a3f49d6190f5c8664155e5176598168af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8470f60bee6c9887fa36827ecc642cb3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a8470f60bee6c9887fa36827ecc642cb3">pw_start_counter</a> (int evid)</td></tr>
+<tr class="memdesc:a8470f60bee6c9887fa36827ecc642cb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Init all counters.  <a href="#a8470f60bee6c9887fa36827ecc642cb3">More...</a><br /></td></tr>
+<tr class="separator:a8470f60bee6c9887fa36827ecc642cb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd7d222c6ab9812083a30b7dbbfc9570"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#afd7d222c6ab9812083a30b7dbbfc9570">pw_stop_counter</a> (int evid)</td></tr>
+<tr class="memdesc:afd7d222c6ab9812083a30b7dbbfc9570"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop all the counters.  <a href="#afd7d222c6ab9812083a30b7dbbfc9570">More...</a><br /></td></tr>
+<tr class="separator:afd7d222c6ab9812083a30b7dbbfc9570"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7eded6834513802e78fb5d6e98034ab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#ab7eded6834513802e78fb5d6e98034ab">pw_print</a> ()</td></tr>
+<tr class="memdesc:ab7eded6834513802e78fb5d6e98034ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Printing the values of the counters.  <a href="#ab7eded6834513802e78fb5d6e98034ab">More...</a><br /></td></tr>
+<tr class="separator:ab7eded6834513802e78fb5d6e98034ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a3e1c52534745f2217e9c9e00a05b543b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a3e1c52534745f2217e9c9e00a05b543b">papi_wrapper_counters_threadid</a> = <a class="el" href="papi__wrapper_8c.html#ad0756fd338a995ca43de698d3111083e">PAPIWRAP_THREAD_MONITOR</a></td></tr>
-<tr class="separator:a3e1c52534745f2217e9c9e00a05b543b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab22806f656cad6394fc392b5e7816cc1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#ab22806f656cad6394fc392b5e7816cc1">pw_counters_threadid</a> = 0</td></tr>
+<tr class="separator:ab22806f656cad6394fc392b5e7816cc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af566f6b3cc80d3b423b39274d6efc5ad"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#af566f6b3cc80d3b423b39274d6efc5ad">_pw_eventlist</a> []</td></tr>
+<tr class="separator:af566f6b3cc80d3b423b39274d6efc5ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65fa15bf0be868b83137c06518fc800b"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a65fa15bf0be868b83137c06518fc800b">pw_eventlist</a></td></tr>
+<tr class="separator:a65fa15bf0be868b83137c06518fc800b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62e1bbff67fd483d2156b89f1f367ac5"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a62e1bbff67fd483d2156b89f1f367ac5">pw_evenset</a></td></tr>
+<tr class="separator:a62e1bbff67fd483d2156b89f1f367ac5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa21ff83adcc5b0d10ed80613f4021e9d"><td class="memItemLeft" align="right" valign="top">long long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#aa21ff83adcc5b0d10ed80613f4021e9d">pw_values</a> [<a class="el" href="papi__wrapper_8h.html#a40754f8807c413e962553bfec6cf388c">PW_MAX_COUNTERS</a>]</td></tr>
+<tr class="separator:aa21ff83adcc5b0d10ed80613f4021e9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a369266c24eacffb87046522897a570d5"></a>
@@ -156,42 +168,42 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a5afb323b9bfc82a3057fc35542d719d2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5afb323b9bfc82a3057fc35542d719d2">&#9670;&nbsp;</a></span>PAPIWRAP_CACHE_MB</h2>
+<a id="aff41a0b1089a80b4987ffae1868e61da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff41a0b1089a80b4987ffae1868e61da">&#9670;&nbsp;</a></span>PW_CACHE_MB</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define PAPIWRAP_CACHE_MB&#160;&#160;&#160;1</td>
+          <td class="memname">#define PW_CACHE_MB&#160;&#160;&#160;1</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a3f42e67852beb00e7a95d58d07e19907"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f42e67852beb00e7a95d58d07e19907">&#9670;&nbsp;</a></span>PAPIWRAP_CACHE_SIZE</h2>
+<a id="a62d4bd0fa45faf7d641785f1408526d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62d4bd0fa45faf7d641785f1408526d1">&#9670;&nbsp;</a></span>PW_CACHE_SIZE</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define PAPIWRAP_CACHE_SIZE&#160;&#160;&#160;<a class="el" href="papi__wrapper_8c.html#a5afb323b9bfc82a3057fc35542d719d2">PAPIWRAP_CACHE_MB</a> *(1024 * 1024 * 1024)</td>
+          <td class="memname">#define PW_CACHE_SIZE&#160;&#160;&#160;<a class="el" href="papi__wrapper_8c.html#aff41a0b1089a80b4987ffae1868e61da">PW_CACHE_MB</a> *(1024 * 1024 * 1024)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ad0756fd338a995ca43de698d3111083e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0756fd338a995ca43de698d3111083e">&#9670;&nbsp;</a></span>PAPIWRAP_THREAD_MONITOR</h2>
+<a id="ab78bbf669908dd88451aa417bcf75336"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab78bbf669908dd88451aa417bcf75336">&#9670;&nbsp;</a></span>PW_THREAD_MONITOR</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define PAPIWRAP_THREAD_MONITOR&#160;&#160;&#160;0</td>
+          <td class="memname">#define PW_THREAD_MONITOR&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -236,8 +248,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a3ef368add7529127cc774ef53c95dfd3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ef368add7529127cc774ef53c95dfd3">&#9670;&nbsp;</a></span>papi_overflow_handler()</h2>
+<a id="af7b2fa3d2622a318d41a0976d74a37b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7b2fa3d2622a318d41a0976d74a37b3">&#9670;&nbsp;</a></span>papi_overflow_handler()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -257,7 +269,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">long_long&#160;</td>
+          <td class="paramtype">long long&#160;</td>
           <td class="paramname"><em>overflow_vector</em>, </td>
         </tr>
         <tr>
@@ -287,14 +299,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="afb269433ce1956939251ba14162b284f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afb269433ce1956939251ba14162b284f">&#9670;&nbsp;</a></span>papi_wrapper_close()</h2>
+<a id="a3f49d6190f5c8664155e5176598168af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f49d6190f5c8664155e5176598168af">&#9670;&nbsp;</a></span>pw_close()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void papi_wrapper_close </td>
+          <td class="memname">void pw_close </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -307,14 +319,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a7dd9ae39e9c34988539c51478fa1ca2f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7dd9ae39e9c34988539c51478fa1ca2f">&#9670;&nbsp;</a></span>papi_wrapper_init()</h2>
+<a id="abf7527c4712d6da3c3f18da35a9cf76f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf7527c4712d6da3c3f18da35a9cf76f">&#9670;&nbsp;</a></span>pw_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void papi_wrapper_init </td>
+          <td class="memname">void pw_init </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -327,14 +339,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a9f7ab1e4614682722952df8a9eda21af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9f7ab1e4614682722952df8a9eda21af">&#9670;&nbsp;</a></span>papi_wrapper_prepare_instruments()</h2>
+<a id="a5c33f9c913f42817b24937d0fbe0fb70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c33f9c913f42817b24937d0fbe0fb70">&#9670;&nbsp;</a></span>pw_prepare_instruments()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void papi_wrapper_prepare_instruments </td>
+          <td class="memname">void pw_prepare_instruments </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -342,16 +354,18 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Flushes cache by using assembly instructions and calloc. </p>
+
 </div>
 </div>
-<a id="ac4d31cde9454bb1ae7f4173a27e8c24b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac4d31cde9454bb1ae7f4173a27e8c24b">&#9670;&nbsp;</a></span>papi_wrapper_print()</h2>
+<a id="ab7eded6834513802e78fb5d6e98034ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7eded6834513802e78fb5d6e98034ab">&#9670;&nbsp;</a></span>pw_print()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void papi_wrapper_print </td>
+          <td class="memname">void pw_print </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -363,14 +377,50 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a09100cc4cbc313132e6a083b1f298197"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09100cc4cbc313132e6a083b1f298197">&#9670;&nbsp;</a></span>papi_wrapper_start_counter()</h2>
+<a id="ae214cf2aaceabf56fa6f7f2efd451e3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae214cf2aaceabf56fa6f7f2efd451e3e">&#9670;&nbsp;</a></span>pw_set_opts()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int papi_wrapper_start_counter </td>
+          <td class="memname">void pw_set_opts </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n_thread</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>evid</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PAPI set options. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">n_thread</td><td>Thread number of caller </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8470f60bee6c9887fa36827ecc642cb3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8470f60bee6c9887fa36827ecc642cb3">&#9670;&nbsp;</a></span>pw_start_counter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int pw_start_counter </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>evid</em></td><td>)</td>
@@ -383,14 +433,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a2cedce0bc47ca537bc39bebc8e74e243"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2cedce0bc47ca537bc39bebc8e74e243">&#9670;&nbsp;</a></span>papi_wrapper_stop_counter()</h2>
+<a id="afd7d222c6ab9812083a30b7dbbfc9570"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd7d222c6ab9812083a30b7dbbfc9570">&#9670;&nbsp;</a></span>pw_stop_counter()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void papi_wrapper_stop_counter </td>
+          <td class="memname">void pw_stop_counter </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>evid</em></td><td>)</td>
@@ -410,14 +460,70 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a3e1c52534745f2217e9c9e00a05b543b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e1c52534745f2217e9c9e00a05b543b">&#9670;&nbsp;</a></span>papi_wrapper_counters_threadid</h2>
+<a id="af566f6b3cc80d3b423b39274d6efc5ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af566f6b3cc80d3b423b39274d6efc5ad">&#9670;&nbsp;</a></span>_pw_eventlist</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int papi_wrapper_counters_threadid = <a class="el" href="papi__wrapper_8c.html#ad0756fd338a995ca43de698d3111083e">PAPIWRAP_THREAD_MONITOR</a></td>
+          <td class="memname">char* _pw_eventlist[]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div><div class="line"></div><div class="line">    NULL}</div></div><!-- fragment -->
+</div>
+</div>
+<a id="ab22806f656cad6394fc392b5e7816cc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab22806f656cad6394fc392b5e7816cc1">&#9670;&nbsp;</a></span>pw_counters_threadid</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int pw_counters_threadid = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a62e1bbff67fd483d2156b89f1f367ac5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62e1bbff67fd483d2156b89f1f367ac5">&#9670;&nbsp;</a></span>pw_evenset</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* pw_evenset</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a65fa15bf0be868b83137c06518fc800b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65fa15bf0be868b83137c06518fc800b">&#9670;&nbsp;</a></span>pw_eventlist</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* pw_eventlist</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa21ff83adcc5b0d10ed80613f4021e9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa21ff83adcc5b0d10ed80613f4021e9d">&#9670;&nbsp;</a></span>pw_values</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">long long pw_values[<a class="el" href="papi__wrapper_8h.html#a40754f8807c413e962553bfec6cf388c">PW_MAX_COUNTERS</a>]</td>
         </tr>
       </table>
 </div><div class="memdoc">
