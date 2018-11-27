@@ -248,6 +248,11 @@ pw_init()
 #endif
             int retval;
             int k;
+/* TOFIX */
+#ifdef PW_SAMPLING
+            fprintf(stderr, "[TOFIX] Currently not supported; working on it\n");
+            exit(-1);
+#endif
 #ifdef PAPI_MULTITHREAD
 #    pragma omp master
             {

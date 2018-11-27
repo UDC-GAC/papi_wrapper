@@ -33,7 +33,7 @@ Configuration parameters:
  * `-DPAPI_VERBOSE` -- disabled by default. More text in the output and errors.
  * `-DPW_GRN=<granularity>` -- by default: `PAPI_GRN_MIN`.
  * `-DPW_DOM=<domain>` -- by default: `PAPI_DOM_ALL`.
- * `-DPW_SAMPLING` -- enables sampling for all the events specified in `PAPI_FILE_LIST` with thresholds specified in `PAPI_FILE_SAMPLING`.
+ * `-DPW_SAMPLING` *DISABLED FOR THE MOMENT* -- enables sampling for all the events specified in `PAPI_FILE_LIST` with thresholds specified in `PAPI_FILE_SAMPLING`.
 
 ## Credits
 
