@@ -73,13 +73,17 @@ $(function() {
 <h2>Usage</h2>
 <p>It is only needed to rewrite our code as:</p>
 <div class="fragment"><div class="line">#include &lt;papi_wrapper.h&gt;</div><div class="line">...</div><div class="line">pw_start_instruments /* starts automatically PAPI counters */</div><div class="line"></div><div class="line">/* region of interest (ROI) to measure */</div><div class="line"></div><div class="line">pw_stop_instruments /* stop counting */</div><div class="line">pw_print_instruments /* print results */</div></div><!-- fragment --><p>This way, it is only needed to add the header <code>#include &lt;<a class="el" href="papi__wrapper_8h.html">papi_wrapper.h</a>&gt;</code> to the source code and compile with <code>-I/source/to/papi-wrapper /source/to/papi-wrapper/papi_wrapper.c</code>.</p>
-<p>You can also also specify a list of PAPI hardware counters using <code>-DPAPI_FILE_LIST=&lt;file&gt;</code>. Default value is: <code>papi_counters.list</code> (see its format inside the file).</p>
 <h2>Options</h2>
-<p>Most remarkable options are:</p>
-<ul>
+<p>Configuration files (see their format in the repo):</p><ul>
+<li><code>-DPAPI_FILE_LIST=&lt;file&gt;</code>. Default: <code>papi_counters.list</code>. Contains the name of PAPI events to count.</li>
+<li><code>-DPAPI_FILE_SAMPLING=&lt;file&gt;</code>. Default: <code>papi_sampling.list</code>. Contains the threshold of counters specified in <code>PAPI_FILE_LIST</code>. Useless if <code>PW_SAMPLING</code> not specified.</li>
+</ul>
+<p>Configuration parameters:</p><ul>
 <li><code>-DPAPI_MULTITHREAD</code> &ndash; disabled by default. If not defined, only <code>PAPIWRAP_THREAD_MONITOR</code> will count events.</li>
-<li><code>-DPAPI_VERBOSE</code> &ndash; disabled by default. Displays each counter in one line with its name.</li>
-<li><code>-DSAMPLING_RATE=&lt;N&gt;</code> <em>future release</em> &ndash; disabled by default. Allows to modify the sampling rate by triggering an overflow. <em>N</em> stands for number of events occurred.</li>
+<li><code>-DPAPI_VERBOSE</code> &ndash; disabled by default. More text in the output and errors.</li>
+<li><code>-DPW_GRN=&lt;granularity&gt;</code> &ndash; by default: <code>PAPI_GRN_MIN</code>.</li>
+<li><code>-DPW_DOM=&lt;domain&gt;</code> &ndash; by default: <code>PAPI_DOM_ALL</code>.</li>
+<li><code>-DPW_SAMPLING</code> &ndash; enables sampling for all the events specified in <code>PAPI_FILE_LIST</code> with thresholds specified in <code>PAPI_FILE_SAMPLING</code>.</li>
 </ul>
 <h2>Credits</h2>
 <p>This version is based on <a href="https://sourceforge.net/projects/polybench/">PolyBench</a>, under GPLv2 license. </p>

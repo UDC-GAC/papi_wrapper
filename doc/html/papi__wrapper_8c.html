@@ -113,9 +113,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a5c33f9c913f42817b24937d0fbe0fb70"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a5c33f9c913f42817b24937d0fbe0fb70">pw_prepare_instruments</a> ()</td></tr>
 <tr class="memdesc:a5c33f9c913f42817b24937d0fbe0fb70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flushes cache by using assembly instructions and calloc.  <a href="#a5c33f9c913f42817b24937d0fbe0fb70">More...</a><br /></td></tr>
 <tr class="separator:a5c33f9c913f42817b24937d0fbe0fb70"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7b2fa3d2622a318d41a0976d74a37b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#af7b2fa3d2622a318d41a0976d74a37b3">papi_overflow_handler</a> (int EventSet, void *address, long long overflow_vector, void *context)</td></tr>
-<tr class="memdesc:af7b2fa3d2622a318d41a0976d74a37b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handling event overflow.  <a href="#af7b2fa3d2622a318d41a0976d74a37b3">More...</a><br /></td></tr>
-<tr class="separator:af7b2fa3d2622a318d41a0976d74a37b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae214cf2aaceabf56fa6f7f2efd451e3e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#ae214cf2aaceabf56fa6f7f2efd451e3e">pw_set_opts</a> (int n_thread, int evid)</td></tr>
 <tr class="memdesc:ae214cf2aaceabf56fa6f7f2efd451e3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">PAPI set options.  <a href="#ae214cf2aaceabf56fa6f7f2efd451e3e">More...</a><br /></td></tr>
 <tr class="separator:ae214cf2aaceabf56fa6f7f2efd451e3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -143,8 +140,8 @@ Variables</h2></td></tr>
 <tr class="separator:af566f6b3cc80d3b423b39274d6efc5ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65fa15bf0be868b83137c06518fc800b"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a65fa15bf0be868b83137c06518fc800b">pw_eventlist</a></td></tr>
 <tr class="separator:a65fa15bf0be868b83137c06518fc800b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62e1bbff67fd483d2156b89f1f367ac5"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a62e1bbff67fd483d2156b89f1f367ac5">pw_evenset</a></td></tr>
-<tr class="separator:a62e1bbff67fd483d2156b89f1f367ac5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75372bb9dc96ee349e5d6fb0c8fd4db5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#a75372bb9dc96ee349e5d6fb0c8fd4db5">pw_eventset</a></td></tr>
+<tr class="separator:a75372bb9dc96ee349e5d6fb0c8fd4db5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa21ff83adcc5b0d10ed80613f4021e9d"><td class="memItemLeft" align="right" valign="top">long long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8c.html#aa21ff83adcc5b0d10ed80613f4021e9d">pw_values</a> [<a class="el" href="papi__wrapper_8h.html#a40754f8807c413e962553bfec6cf388c">PW_MAX_COUNTERS</a>]</td></tr>
 <tr class="separator:aa21ff83adcc5b0d10ed80613f4021e9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -245,57 +242,6 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>this flush is broadcast and extracted </dd></dl>
-
-</div>
-</div>
-<a id="af7b2fa3d2622a318d41a0976d74a37b3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7b2fa3d2622a318d41a0976d74a37b3">&#9670;&nbsp;</a></span>papi_overflow_handler()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void papi_overflow_handler </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>EventSet</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>address</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">long long&#160;</td>
-          <td class="paramname"><em>overflow_vector</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>context</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Handling event overflow. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">EventSet</td><td>Event set which produces the overflow </td></tr>
-    <tr><td class="paramname">address</td><td></td></tr>
-    <tr><td class="paramname">overflow_vector</td><td></td></tr>
-    <tr><td class="paramname">context</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -488,20 +434,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a62e1bbff67fd483d2156b89f1f367ac5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62e1bbff67fd483d2156b89f1f367ac5">&#9670;&nbsp;</a></span>pw_evenset</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int* pw_evenset</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a65fa15bf0be868b83137c06518fc800b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a65fa15bf0be868b83137c06518fc800b">&#9670;&nbsp;</a></span>pw_eventlist</h2>
 
@@ -510,6 +442,20 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int* pw_eventlist</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a75372bb9dc96ee349e5d6fb0c8fd4db5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75372bb9dc96ee349e5d6fb0c8fd4db5">&#9670;&nbsp;</a></span>pw_eventset</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int pw_eventset</td>
         </tr>
       </table>
 </div><div class="memdoc">

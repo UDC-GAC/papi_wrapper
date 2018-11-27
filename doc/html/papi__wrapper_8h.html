@@ -82,8 +82,6 @@ $(function() {
 Include dependency graph for papi_wrapper.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="papi__wrapper_8h__incl.png" border="0" usemap="#src_2papi__wrapper_8h" alt=""/></div>
-<map name="src_2papi__wrapper_8h" id="src_2papi__wrapper_8h">
-</map>
 </div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
@@ -106,7 +104,7 @@ Classes</h2></td></tr>
 Macros</h2></td></tr>
 <tr class="memitem:ae48386d48935fe6807edf88f806841de"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8h.html#ae48386d48935fe6807edf88f806841de">PW_GRN</a>&#160;&#160;&#160;PAPI_GRN_MIN</td></tr>
 <tr class="separator:ae48386d48935fe6807edf88f806841de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ddcf1452ae0ad92b6808252832c376c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8h.html#a4ddcf1452ae0ad92b6808252832c376c">PW_DOM</a>&#160;&#160;&#160;PAPI_DOM_MIN</td></tr>
+<tr class="memitem:a4ddcf1452ae0ad92b6808252832c376c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8h.html#a4ddcf1452ae0ad92b6808252832c376c">PW_DOM</a>&#160;&#160;&#160;PAPI_DOM_ALL</td></tr>
 <tr class="separator:a4ddcf1452ae0ad92b6808252832c376c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf57a19e32d3bea3a4c6e37510ee2bed"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8h.html#acf57a19e32d3bea3a4c6e37510ee2bed">PW_NUM_EVTSET</a>&#160;&#160;&#160;10</td></tr>
 <tr class="separator:acf57a19e32d3bea3a4c6e37510ee2bed"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -114,7 +112,7 @@ Macros</h2></td></tr>
 <tr class="separator:a40754f8807c413e962553bfec6cf388c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb53013776b31648987d5fcd9f3d1156"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8h.html#adb53013776b31648987d5fcd9f3d1156">PW_VALUES</a>(n_thread,  evid)&#160;&#160;&#160;(<a class="el" href="papi__wrapper_8h.html#a34b4907d9798186ca81eb54f523d991c">PW_thread</a>[n_thread].<a class="el" href="papi__wrapper_8c.html#aa21ff83adcc5b0d10ed80613f4021e9d">pw_values</a>[evid])</td></tr>
 <tr class="separator:adb53013776b31648987d5fcd9f3d1156"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a043705bc3c13b2a4d7e61448afd3f45c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8h.html#a043705bc3c13b2a4d7e61448afd3f45c">PW_EVTSET</a>(n_thread,  evid)&#160;&#160;&#160;(<a class="el" href="papi__wrapper_8h.html#a34b4907d9798186ca81eb54f523d991c">PW_thread</a>[n_thread].pw_eventset[evid])</td></tr>
+<tr class="memitem:a043705bc3c13b2a4d7e61448afd3f45c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8h.html#a043705bc3c13b2a4d7e61448afd3f45c">PW_EVTSET</a>(n_thread,  evid)&#160;&#160;&#160;(<a class="el" href="papi__wrapper_8h.html#a34b4907d9798186ca81eb54f523d991c">PW_thread</a>[n_thread].<a class="el" href="papi__wrapper_8c.html#a75372bb9dc96ee349e5d6fb0c8fd4db5">pw_eventset</a>[evid])</td></tr>
 <tr class="separator:a043705bc3c13b2a4d7e61448afd3f45c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64df01cd5f62f5d3152fb5e22b3d1fa5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="papi__wrapper_8h.html#a64df01cd5f62f5d3152fb5e22b3d1fa5">PAPI_FILE_LIST</a>&#160;&#160;&#160;&quot;papi_counters.list&quot;</td></tr>
 <tr class="separator:a64df01cd5f62f5d3152fb5e22b3d1fa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -180,7 +178,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define PW_DOM&#160;&#160;&#160;PAPI_DOM_MIN</td>
+          <td class="memname">#define PW_DOM&#160;&#160;&#160;PAPI_DOM_ALL</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -208,7 +206,7 @@ Variables</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(<a class="el" href="papi__wrapper_8h.html#a34b4907d9798186ca81eb54f523d991c">PW_thread</a>[n_thread].pw_eventset[evid])</td>
+          <td></td><td>&#160;&#160;&#160;(<a class="el" href="papi__wrapper_8h.html#a34b4907d9798186ca81eb54f523d991c">PW_thread</a>[n_thread].<a class="el" href="papi__wrapper_8c.html#a75372bb9dc96ee349e5d6fb0c8fd4db5">pw_eventset</a>[evid])</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -307,7 +305,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><a class="code" href="papi__wrapper_8c.html#a5c33f9c913f42817b24937d0fbe0fb70">pw_prepare_instruments</a>();                       \</div><div class="line">    pw_init();                                      \</div><div class="line">    int evid;                                       \</div><div class="line">    for (evid = 0; <a class="code" href="papi__wrapper_8h.html#a65fa15bf0be868b83137c06518fc800b">pw_eventlist</a>[evid] != 0; evid++) \</div><div class="line">    {                                               \</div><div class="line">        if (<a class="code" href="papi__wrapper_8h.html#a8470f60bee6c9887fa36827ecc642cb3">pw_start_counter</a>(evid)) <span class="keywordflow">continue</span>;</div><div class="ttc" id="papi__wrapper_8c_html_a5c33f9c913f42817b24937d0fbe0fb70"><div class="ttname"><a href="papi__wrapper_8c.html#a5c33f9c913f42817b24937d0fbe0fb70">pw_prepare_instruments</a></div><div class="ttdeci">void pw_prepare_instruments()</div><div class="ttdoc">Flushes cache by using assembly instructions and calloc. </div><div class="ttdef"><b>Definition:</b> papi_wrapper.c:119</div></div>
 <div class="ttc" id="papi__wrapper_8h_html_a65fa15bf0be868b83137c06518fc800b"><div class="ttname"><a href="papi__wrapper_8h.html#a65fa15bf0be868b83137c06518fc800b">pw_eventlist</a></div><div class="ttdeci">int * pw_eventlist</div><div class="ttdef"><b>Definition:</b> papi_wrapper.c:79</div></div>
-<div class="ttc" id="papi__wrapper_8h_html_a8470f60bee6c9887fa36827ecc642cb3"><div class="ttname"><a href="papi__wrapper_8h.html#a8470f60bee6c9887fa36827ecc642cb3">pw_start_counter</a></div><div class="ttdeci">int pw_start_counter(int evid)</div><div class="ttdoc">Init all counters. </div><div class="ttdef"><b>Definition:</b> papi_wrapper.c:379</div></div>
+<div class="ttc" id="papi__wrapper_8h_html_a8470f60bee6c9887fa36827ecc642cb3"><div class="ttname"><a href="papi__wrapper_8h.html#a8470f60bee6c9887fa36827ecc642cb3">pw_start_counter</a></div><div class="ttdeci">int pw_start_counter(int evid)</div><div class="ttdoc">Init all counters. </div><div class="ttdef"><b>Definition:</b> papi_wrapper.c:386</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -322,7 +320,7 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code" href="papi__wrapper_8h.html#afd7d222c6ab9812083a30b7dbbfc9570">pw_stop_counter</a>(evid);  \</div><div class="line">    }                       \</div><div class="line">    pw_close();</div><div class="ttc" id="papi__wrapper_8h_html_afd7d222c6ab9812083a30b7dbbfc9570"><div class="ttname"><a href="papi__wrapper_8h.html#afd7d222c6ab9812083a30b7dbbfc9570">pw_stop_counter</a></div><div class="ttdeci">void pw_stop_counter(int evid)</div><div class="ttdoc">Stop all the counters. </div><div class="ttdef"><b>Definition:</b> papi_wrapper.c:441</div></div>
+<b>Value:</b><div class="fragment"><div class="line"><a class="code" href="papi__wrapper_8h.html#afd7d222c6ab9812083a30b7dbbfc9570">pw_stop_counter</a>(evid);  \</div><div class="line">    }                       \</div><div class="line">    pw_close();</div><div class="ttc" id="papi__wrapper_8h_html_afd7d222c6ab9812083a30b7dbbfc9570"><div class="ttname"><a href="papi__wrapper_8h.html#afd7d222c6ab9812083a30b7dbbfc9570">pw_stop_counter</a></div><div class="ttdeci">void pw_stop_counter(int evid)</div><div class="ttdoc">Stop all the counters. </div><div class="ttdef"><b>Definition:</b> papi_wrapper.c:449</div></div>
 </div><!-- fragment -->
 </div>
 </div>

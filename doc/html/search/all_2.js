@@ -2,7 +2,6 @@ var searchData=
 [
   ['papi_5fwrapper',['papi_wrapper',['../index.html',1,'']]],
   ['papi_5ffile_5flist',['PAPI_FILE_LIST',['../papi__wrapper_8h.html#a64df01cd5f62f5d3152fb5e22b3d1fa5',1,'papi_wrapper.h']]],
-  ['papi_5foverflow_5fhandler',['papi_overflow_handler',['../papi__wrapper_8c.html#af7b2fa3d2622a318d41a0976d74a37b3',1,'papi_wrapper.c']]],
   ['papi_5fwrapper_2ec',['papi_wrapper.c',['../papi__wrapper_8c.html',1,'']]],
   ['papi_5fwrapper_2eh',['papi_wrapper.h',['../papi__wrapper_8h.html',1,'']]],
   ['pw_5fcache_5fmb',['PW_CACHE_MB',['../papi__wrapper_8c.html#aff41a0b1089a80b4987ffae1868e61da',1,'papi_wrapper.c']]],
@@ -11,9 +10,8 @@ var searchData=
   ['pw_5fcounters_5fthreadid',['pw_counters_threadid',['../papi__wrapper_8c.html#ab22806f656cad6394fc392b5e7816cc1',1,'papi_wrapper.c']]],
   ['pw_5fdom',['PW_DOM',['../papi__wrapper_8h.html#a4ddcf1452ae0ad92b6808252832c376c',1,'papi_wrapper.h']]],
   ['pw_5fdomain',['pw_domain',['../structPW__thread__info.html#ac3cd4bff6dbae474cccb88954ab8cf25',1,'PW_thread_info']]],
-  ['pw_5fevenset',['pw_evenset',['../papi__wrapper_8c.html#a62e1bbff67fd483d2156b89f1f367ac5',1,'papi_wrapper.c']]],
   ['pw_5feventlist',['pw_eventlist',['../papi__wrapper_8c.html#a65fa15bf0be868b83137c06518fc800b',1,'pw_eventlist():&#160;papi_wrapper.c'],['../papi__wrapper_8h.html#a65fa15bf0be868b83137c06518fc800b',1,'pw_eventlist():&#160;papi_wrapper.c']]],
-  ['pw_5feventset',['pw_eventset',['../structPW__thread__info.html#a01f00334c4874cfb4618dc6fc40444db',1,'PW_thread_info']]],
+  ['pw_5feventset',['pw_eventset',['../structPW__thread__info.html#a01f00334c4874cfb4618dc6fc40444db',1,'PW_thread_info::pw_eventset()'],['../papi__wrapper_8c.html#a75372bb9dc96ee349e5d6fb0c8fd4db5',1,'pw_eventset():&#160;papi_wrapper.c']]],
   ['pw_5fevtset',['PW_EVTSET',['../papi__wrapper_8h.html#a043705bc3c13b2a4d7e61448afd3f45c',1,'papi_wrapper.h']]],
   ['pw_5fgrn',['PW_GRN',['../papi__wrapper_8h.html#ae48386d48935fe6807edf88f806841de',1,'papi_wrapper.h']]],
   ['pw_5finit',['pw_init',['../papi__wrapper_8c.html#abf7527c4712d6da3c3f18da35a9cf76f',1,'pw_init():&#160;papi_wrapper.c'],['../papi__wrapper_8h.html#abf7527c4712d6da3c3f18da35a9cf76f',1,'pw_init():&#160;papi_wrapper.c']]],
