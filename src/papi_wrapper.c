@@ -206,7 +206,7 @@ pw_set_opts(int n_thread, int evid)
 #ifdef PAPI_MULTITHREAD
     int evtset = PW_EVTSET(n_thread, evid);
 #else
-    int evtset  = pw_eventset;
+    int evtset   = pw_eventset;
 #endif
 
     /* Domain */
@@ -304,7 +304,8 @@ pw_init()
                                     retval);
             }
 #else
-    pw_eventset = PAPI_NULL;
+    pw_eventset  = PAPI_NULL;
+    pw_eventlist = (int *)malloc(sizeof(int) * PW_MAX_COUNTERS);
     if ((retval = PAPI_library_init(PAPI_VER_CURRENT)) != PAPI_VER_CURRENT)
         PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_library_init", retval);
     if ((retval = PAPI_create_eventset(&pw_eventset)) != PAPI_OK)
@@ -425,9 +426,9 @@ pw_start_counter(int evid)
         PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_add_event", 1);
     if (PAPI_get_event_info(pw_eventlist[evid], &evinfo) != PAPI_OK)
         PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_get_event_info", retval);
+    pw_set_opts(0, evid);
     if ((retval = PAPI_start(pw_eventset)) != PAPI_OK)
         PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_start", retval);
-    pw_set_opts(0, evid);
 #endif
 #ifdef _OPENMP
 #    ifndef PAPI_MULTITHREAD
