@@ -25,6 +25,54 @@
 #ifndef PAPI_WRAPPER_H
 #define PAPI_WRAPPER_H
 
+/* Need to compile with -lpapi flag */
+#include <papi.h>
+
+/* Default granularity (-DPW_GRN) for all EventSets*/
+#ifndef PW_GRN
+#    define PW_GRN PAPI_GRN_MIN
+#endif
+
+/* Default domain (-DPW_DOM) for each EventSet */
+#ifndef PW_DOM
+#    define PW_DOM PAPI_DOM_MIN
+#endif
+
+#define PW_NUM_EVTSET 10
+
+/**
+ * @brief Struct to handle each PAPI thread info
+ *
+ * We have to store the EventSet, also the values obtained by all the different
+ * counters. The same way, we also enable some attributes when sampling is
+ * enabled.
+ */
+typedef struct PW_thread_info
+{
+    int *      pw_eventset;
+    int        pw_domain;
+    long long *pw_values;
+#ifdef PW_SAMPLING
+    int        pw_overflow_enabled;
+    long long *pw_overflows;
+#endif
+} PW_thread_info_t;
+
+#define PW_MAX_COUNTERS 96
+
+/* Useful macros */
+#define PW_VALUES(n_thread, evid) (PW_thread[n_thread].pw_values[evid])
+#define PW_EVTSET(n_thread, evid) (PW_thread[n_thread].pw_eventset[evid])
+#ifdef PW_SAMPLING
+#    define PW_OVRFLW_ON(n_thread) (PW_thread[n_thread].pw_overflow_enabled = 1)
+#    define PW_OVRFLW_OFF(n_thread) \
+        (PW_thread[n_thread].pw_overflow_enabled = 0)
+#    define PW_OVRFLW(n_thread, evid) (PW_thread[n_thread].pw_overflows[evid])
+#    define PW_OVRFLW_RST(n_thread, evid) \
+        (PW_thread[n_thread].pw_overflows[evid] = 0)
+#endif
+
+/* Some other options */
 #ifndef PAPI_FILE_LIST
 #    define PAPI_FILE_LIST "papi_counters.list"
 #endif
@@ -35,22 +83,7 @@
 #    endif
 #endif
 
-#define PW_MAX_COUNTERS 96
-
-typedef struct PW_thread_info
-{
-    int        pw_eventset;
-    long long *pw_values;
-#ifdef PW_SAMPLING
-    long long *pw_overflows;
-#endif
-} PW_thread_info_t;
-
-/* useful macros */
-#define PW_VALUES(n_thread, evid) (PW_thread[n_thread].pw_values[evid])
-#define PW_OVRFLW(n_threadi, evid) (PW_thread[n_thread].pw_overflows[evid])
-#define PW_EVTSET(n_thread) (PW_thread[n_thread].pw_eventset)
-
+/* some other declarations */
 extern PW_thread_info_t *PW_thread;
 extern int *             pw_eventlist;
 #define pw_set_thread_report(x) pw_counters_threadid = x;
