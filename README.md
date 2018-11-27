@@ -22,15 +22,18 @@ pw_print_instruments /* print results */
 
 This way, it is only needed to add the header `#include <papi_wrapper.h>` to the source code and compile with `-I/source/to/papi-wrapper /source/to/papi-wrapper/papi_wrapper.c`.
 
-You can also also specify a list of PAPI hardware counters using `-DPAPI_FILE_LIST=<file>`. Default value is: `papi_counters.list` (see its format inside the file).
-
 ## Options
 
-Most remarkable options are:
+Configuration files (see their format in the repo):
+ * `-DPAPI_FILE_LIST=<file>`. Default: `papi_counters.list`. Contains the name of PAPI events to count.
+ * `-DPAPI_FILE_SAMPLING=<file>`. Default: `papi_sampling.list`. Contains the threshold of counters specified in `PAPI_FILE_LIST`. Useless if `PW_SAMPLING` not specified.
 
+Configuration parameters:
  * `-DPAPI_MULTITHREAD` -- disabled by default. If not defined, only `PAPIWRAP_THREAD_MONITOR` will count events.
- * `-DPAPI_VERBOSE` -- disabled by default. Displays each counter in one line with its name.
- * `-DSAMPLING_RATE=<N>` *future release* -- disabled by default. Allows to modify the sampling rate by triggering an overflow. *N* stands for number of events occurred.
+ * `-DPAPI_VERBOSE` -- disabled by default. More text in the output and errors.
+ * `-DPW_GRN=<granularity>` -- by default: `PAPI_GRN_MIN`.
+ * `-DPW_DOM=<domain>` -- by default: `PAPI_DOM_ALL`.
+ * `-DPW_SAMPLING` -- enables sampling for all the events specified in `PAPI_FILE_LIST` with thresholds specified in `PAPI_FILE_SAMPLING`.
 
 ## Credits
 
