@@ -1,7 +1,7 @@
 # papi_wrapper
 Simple wrapper for PAPI most common used functions.
 
-PAPI's low-level API allows programmers to program different hardware counters while executing a program. However, programming those counters may introduce a lot of complex code onto the original program. Besides, configuring properly PAPI may be tedious. For these reasons we have created a set of macros in order to simplify the problem, while configuring PAPI at compilation
+PAPI's low-level API allows programmers to program different hardware counters while executing a program. However, programming those counters may introduce a lot of complex code onto the original program. Besides, configuring properly PAPI may be tedious. For these reasons we have created a set of macros in order to simplify the problem, while configuring PAPI at compilation time: either using flags or files.
 
 This interface works for multithreaded programs using OpenMP; actually this was the main reason for developing this interface. See [Usage](#usage) and [Options](#options) sections for further details.
 
@@ -39,5 +39,5 @@ Configuration parameters:
 
 This version is based on [PolyBench](https://sourceforge.net/projects/polybench/), under GPLv2 license. 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjEwNDUxMzc0NV19
+eyJoaXN0b3J5IjpbLTkxODc4OTA0Ml19
 -->
