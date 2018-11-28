@@ -1,5 +1,5 @@
 # papi_wrapper
-Simple wrapper for PAPI most common used functions.
+Simple wrapper for PAPI most common used functions: set up events, start counters, stop counters. Also simplifying setting up some options such as domain, granularity or overflow.
 
 PAPI's low-level API allows programmers to program different hardware counters while executing a program. However, programming those counters may introduce a lot of complex code onto the original program. Besides, configuring properly PAPI may be tedious. For these reasons we have created a set of macros in order to simplify the problem, while configuring PAPI at compilation time: either using flags or files.
 
@@ -39,5 +39,5 @@ Configuration parameters:
 
 This version is based on [PolyBench](https://sourceforge.net/projects/polybench/), under GPLv2 license. 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTkxODc4OTA0Ml19
+eyJoaXN0b3J5IjpbNDUxMDk0MTMsLTkxODc4OTA0Ml19
 -->
