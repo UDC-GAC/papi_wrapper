@@ -35,9 +35,13 @@ Configuration parameters:
  * `-DPW_DOM=<domain>` --- by default: `PAPI_DOM_ALL`.
  * `-DPW_SAMPLING` --- enables sampling for all the events specified in `PAPI_FILE_LIST` with thresholds specified in `PAPI_FILE_SAMPLING`.
 
+## Roadmap
+Refer to project `roadmap` in projects.
+
 ## Credits
 
 This version is based on [PolyBench](https://sourceforge.net/projects/polybench/), under GPLv2 license. 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDUxMDk0MTMsLTkxODc4OTA0Ml19
+eyJoaXN0b3J5IjpbLTEwMDY2ODk2OTYsNDUxMDk0MTMsLTkxOD
+c4OTA0Ml19
 -->
