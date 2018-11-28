@@ -34,6 +34,8 @@ Configuration parameters:
  * `-DPW_GRN=<granularity>` --- by default: `PAPI_GRN_MIN`.
  * `-DPW_DOM=<domain>` --- by default: `PAPI_DOM_ALL`.
  * `-DPW_SAMPLING` --- enables sampling for all the events specified in `PAPI_FILE_LIST` with thresholds specified in `PAPI_FILE_SAMPLING`.
+<<<<<<< HEAD
+=======
 
 ## Roadmap
 Refer to project `roadmap` in projects.
