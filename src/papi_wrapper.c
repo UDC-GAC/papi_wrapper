@@ -254,11 +254,6 @@ pw_init()
 #endif
             int retval;
             int k;
-/* TOFIX */
-#ifdef PW_SAMPLING
-            fprintf(stderr, "[TOFIX] Currently not supported; working on it\n");
-            exit(-1);
-#endif
 #ifdef PAPI_MULTITHREAD
 #    pragma omp master
             {
@@ -354,39 +349,18 @@ pw_close()
 #    ifndef PAPI_MULTITHREAD
         if (omp_get_thread_num() == pw_counters_threadid)
         {
-#    endif
-#endif
-            int retval;
-//#ifdef PAPI_MULTITHREAD
-//#    pragma omp master
-//            {
-//                int n_thread = omp_get_thread_num();
-//                int evid     = 0;
-//                for (evid = 0; pw_eventlist[evid] != 0; evid++)
-//                {
-//                    if ((retval =
-//                             PAPI_destroy_eventset(&PW_EVTSET(n_thread,
-//                             evid)))
-//                        != PAPI_OK)
-//                        PAPI_WRAP_error(__FILE__, __LINE__,
-//                                        "PAPI_destroy_eventset", retval);
-//                }
-//            }
-//#else
-//    if ((retval = PAPI_destroy_eventset(&pw_eventset)) != PAPI_OK)
-//        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_destroy_eventset", retval);
-//#endif
-#pragma omp master
-            {
-                if (PAPI_is_initialized()) PAPI_shutdown();
-            }
-
-#ifdef _OPENMP
-#    ifndef PAPI_MULTITHREAD
+            if (PAPI_is_initialized()) PAPI_shutdown();
+        }
+#    else
+#        pragma omp master
+        {
+            if (PAPI_is_initialized()) PAPI_shutdown();
         }
 #    endif
+#    ifdef _OPENMP
     }
-#    pragma omp barrier
+#        pragma omp barrier
+#    endif
 #endif
 }
 
@@ -484,7 +458,7 @@ pw_stop_counter(int evid)
 //                   _pw_samplinglist[evid],
 //                   PW_OVRFLW(n_thread, evid) * _pw_samplinglist[evid]);
 #    else
-        values = &PW_VALUES(n_thread, evid);
+            values = &PW_VALUES(n_thread, evid);
 #    endif
             if ((retval =
                      PAPI_stop(PW_EVTSET(n_thread, evid), (long long *)values))
