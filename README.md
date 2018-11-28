@@ -29,12 +29,15 @@ Configuration files (see their format in the repo):
  * `-DPAPI_FILE_SAMPLING=<file>`. Default: `papi_sampling.list`. Contains the threshold of counters specified in `PAPI_FILE_LIST`. Useless if `PW_SAMPLING` not specified.
 
 Configuration parameters:
- * `-DPAPI_MULTITHREAD` -- disabled by default. If not defined, only `PAPIWRAP_THREAD_MONITOR` will count events.
- * `-DPAPI_VERBOSE` -- disabled by default. More text in the output and errors.
- * `-DPW_GRN=<granularity>` -- by default: `PAPI_GRN_MIN`.
- * `-DPW_DOM=<domain>` -- by default: `PAPI_DOM_ALL`.
- * `-DPW_SAMPLING` *DISABLED FOR THE MOMENT* -- enables sampling for all the events specified in `PAPI_FILE_LIST` with thresholds specified in `PAPI_FILE_SAMPLING`.
+ * `-DPAPI_MULTITHREAD` --- disabled by default. If not defined, only `PAPIWRAP_THREAD_MONITOR` will count events.
+ * `-DPAPI_VERBOSE` --- disabled by default. More text in the output and errors.
+ * `-DPW_GRN=<granularity>` --- by default: `PAPI_GRN_MIN`.
+ * `-DPW_DOM=<domain>` --- by default: `PAPI_DOM_ALL`.
+ * `-DPW_SAMPLING` --- enables sampling for all the events specified in `PAPI_FILE_LIST` with thresholds specified in `PAPI_FILE_SAMPLING`.
 
 ## Credits
 
 This version is based on [PolyBench](https://sourceforge.net/projects/polybench/), under GPLv2 license. 
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbMjA1MzUxNDMyNl19
+-->
