@@ -30,7 +30,7 @@
 
 /* Default granularity (-DPW_GRN) for all EventSets*/
 #ifndef PW_GRN
-#    define PW_GRN PAPI_GRN_MIN
+#    define PW_GRN PAPI_GRN_THR
 #endif
 
 /* Default domain (-DPW_DOM) for each EventSet */
@@ -70,6 +70,9 @@ typedef struct PW_thread_info
 #    define PW_OVRFLW(n_thread, evid) (PW_thread[n_thread].pw_overflows[evid])
 #    define PW_OVRFLW_RST(n_thread, evid) \
         (PW_thread[n_thread].pw_overflows[evid] = 0)
+/* This is the recommended type of overflowing with PAPI. See PAPI_overflow
+ * manual for more details */
+#    define PW_OVRFLW_TYPE PAPI_OVERFLOW_FORCE_SW
 #endif
 
 /* File configurations */

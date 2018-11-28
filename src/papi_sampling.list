@@ -6,5 +6,8 @@
 //"PAPI_L1_DCA", // data cache accesses l1 
 //"PAPI_L1_DCM", // data cache misses l1 
 //"PAPI_L2_TCA", // data cache accesses l2 
-10000,1000,1000,1000,
+100000,
+10000,
+10000,
+10000,
 
