@@ -29,13 +29,11 @@ Configuration files (see their format in the repo):
  * `-DPAPI_FILE_SAMPLING=<file>`. Default: `papi_sampling.list`. Contains the threshold of counters specified in `PAPI_FILE_LIST`. Useless if `PW_SAMPLING` not specified.
 
 Configuration parameters:
- * `-DPAPI_MULTITHREAD` --- disabled by default. If not defined, only `PAPIWRAP_THREAD_MONITOR` will count events.
- * `-DPAPI_VERBOSE` --- disabled by default. More text in the output and errors.
- * `-DPW_GRN=<granularity>` --- by default: `PAPI_GRN_MIN`.
- * `-DPW_DOM=<domain>` --- by default: `PAPI_DOM_ALL`.
- * `-DPW_SAMPLING` --- enables sampling for all the events specified in `PAPI_FILE_LIST` with thresholds specified in `PAPI_FILE_SAMPLING`.
-<<<<<<< HEAD
-=======
+ * `-DPAPI_MULTITHREAD` - disabled by default. If not defined, only `PAPIWRAP_THREAD_MONITOR` will count events.
+ * `-DPAPI_VERBOSE` - disabled by default. More text in the output and errors.
+ * `-DPW_GRN=<granularity>` - by default: `PAPI_GRN_MIN`.
+ * `-DPW_DOM=<domain>` - by default: `PAPI_DOM_ALL`.
+ * `-DPW_SAMPLING` - enables sampling for all the events specified in `PAPI_FILE_LIST` with thresholds specified in `PAPI_FILE_SAMPLING`.
 
 ## Roadmap
 Refer to project `roadmap` in projects.
