@@ -106,6 +106,8 @@ extern int *             pw_eventlist;
 #define pw_print_instruments pw_print();
 
 /* function declarations */
+extern void
+pw_prepare_instruments();
 extern int
 pw_start_counter(int evid);
 extern void
