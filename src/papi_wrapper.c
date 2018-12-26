@@ -61,7 +61,7 @@ pw_counters_threadid = PW_THREAD_MONITOR;
 
 /* In bytes */
 #ifndef PW_CACHE_SIZE
-#    define PW_CACHE_SIZE PW_CACHE_MB *(1024 * 1024 * 1024)
+#    define PW_CACHE_SIZE (33 * PW_CACHE_MB * (1024 * 1024))
 #endif
 
 /* Read configuration files */
@@ -121,7 +121,7 @@ pw_prepare_instruments()
     int     cache_elemns = PW_CACHE_SIZE / sizeof(double);
     double *flush        = (double *)calloc(cache_elemns, sizeof(double));
 #if defined(__x86_64)
-    intel_clflush(flush, cache_elemns * sizeof(double));
+    intel_clflush(flush, PW_CACHE_SIZE);
 #endif
     free(flush);
 }
@@ -298,17 +298,21 @@ pw_init()
                 pw_eventlist[k] = 0;
             }
 #    pragma omp barrier
-            int n_thread = omp_get_thread_num();
-            int evid;
-            for (evid = 0; pw_eventlist[evid] != 0; evid++)
+#    pragma omp critical
             {
-                PW_EVTSET(n_thread, evid) = PAPI_NULL;
-                if ((retval =
-                         PAPI_create_eventset(&(PW_EVTSET(n_thread, evid))))
-                    != PAPI_OK)
-                    PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_create_eventset",
-                                    retval);
+                int n_thread = omp_get_thread_num();
+                int evid;
+                for (evid = 0; pw_eventlist[evid] != 0; evid++)
+                {
+                    PW_EVTSET(n_thread, evid) = PAPI_NULL;
+                    if ((retval =
+                             PAPI_create_eventset(&(PW_EVTSET(n_thread, evid))))
+                        != PAPI_OK)
+                        PAPI_WRAP_error(__FILE__, __LINE__,
+                                        "PAPI_create_eventset", retval);
+                }
             }
+#    pragma omp barrier
 #else
     pw_eventset  = PAPI_NULL;
     pw_eventlist = (int *)malloc(sizeof(int) * PW_MAX_COUNTERS);
@@ -444,9 +448,9 @@ pw_stop_counter(int evid)
 #    endif
 #endif
 #ifdef PAPI_MULTITHREAD
-            int  retval;
-            int  n_thread = omp_get_thread_num();
-            int *values   = NULL;
+            int        retval;
+            int        n_thread = omp_get_thread_num();
+            long long *values   = NULL;
 #    ifdef PW_SAMPLING
             if ((retval = PAPI_accum(PW_EVTSET(n_thread, evid),
                                      &(PW_VALUES(n_thread, evid))))
@@ -454,9 +458,6 @@ pw_stop_counter(int evid)
                 PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_accum", retval);
             PW_VALUES(n_thread, evid) +=
                 (PW_OVRFLW(n_thread, evid) * _pw_samplinglist[evid]);
-//            printf("%llu\t%llu\t%llu\n", PW_OVRFLW(n_thread, evid),
-//                   _pw_samplinglist[evid],
-//                   PW_OVRFLW(n_thread, evid) * _pw_samplinglist[evid]);
 #    else
             values = &PW_VALUES(n_thread, evid);
 #    endif
@@ -530,13 +531,9 @@ pw_print()
                     if (verbose) printf("\n");
                 }
                 printf("\n");
-                // free(PW_thread[n_thread].pw_values);
-#    ifdef PW_SAMPLING
-                // free(PW_thread[n_thread].pw_overflows);
-#    endif
             }
 #    pragma omp barrier
-#    pragma omp master
+#    pragma omp             master
             {
                 free(PW_thread);
             }

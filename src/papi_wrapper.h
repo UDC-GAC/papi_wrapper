@@ -35,10 +35,10 @@
 
 /* Default domain (-DPW_DOM) for each EventSet */
 #ifndef PW_DOM
-#    define PW_DOM PAPI_DOM_ALL
+#    define PW_DOM PAPI_DOM_KERNEL
 #endif
 
-#define PW_NUM_EVTSET 10
+#define PW_NUM_EVTSET 30
 
 /**
  * @brief Struct to handle each PAPI thread info
