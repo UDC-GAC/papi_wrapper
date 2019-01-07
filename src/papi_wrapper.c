@@ -89,7 +89,24 @@ PW_thread_info_t *PW_thread;
 
 /* Auxiliar functions */
 static void
-PAPI_WRAP_error(const char *file, int line, const char *call, int retval);
+PW_error(const char *file, int line, const char *call, int retval);
+#ifdef PW_DEBUG
+#    include <stdarg.h>
+void
+pw_dprintf(int dlvl, const char *fmt, ...)
+{
+    if (PW_DEBUG_LVL > dlvl) return;
+    va_list ap;
+    va_start(ap, fmt);
+    printf("[%d][DEBUG]: ", dlvl);
+    vprintf(fmt, ap);
+    printf(" [END_DEBUG]\n");
+    va_end(ap);
+}
+#else
+static inline void
+pw_dprintf(int dlvl, const char *fmt, ...){};
+#endif
 
 /**
  * Cache line flush Intel Processors
@@ -125,16 +142,23 @@ void
 pw_get_num_ctrs()
 {
     int evid = 0;
-    for (evid = 0; pw_eventlist[evid] != 0; ++evid)
+    for (evid = 0; _pw_eventlist[evid]; ++evid)
     {
-    }
+    };
     pw_num_ctrs = evid;
     if ((pw_num_hw_ctrs = PAPI_num_counters()) <= 0)
     {
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_num_counters",
-                        pw_num_hw_ctrs);
+        PW_error(__FILE__, __LINE__, "PAPI_num_counters", pw_num_hw_ctrs);
     }
-    pw_multiplexing = (pw_num_ctrs > pw_num_hw_ctrs);
+    pw_multiplexing   = (pw_num_ctrs > pw_num_hw_ctrs);
+    int max_multiplex = PAPI_get_opt(PAPI_MAX_MPX_CTRS, NULL);
+    pw_dprintf(PW_D_LOW, "max_multiplex = %d", max_multiplex);
+    pw_multiplexing = 1;
+    pw_dprintf(PW_D_LOW,
+               "pw_num_ctrs = %d "
+               "pw_num_hw_ctrs = %d "
+               "pw_multiplexing = %d ",
+               pw_num_ctrs, pw_num_hw_ctrs, pw_multiplexing);
 }
 
 /**
@@ -162,7 +186,7 @@ pw_prepare_instruments()
  * @note based on test_fail in papi_utils.c
  */
 static void
-PAPI_WRAP_error(const char *file, int line, const char *call, int retval)
+PW_error(const char *file, int line, const char *call, int retval)
 {
     char buf[128];
 
@@ -219,7 +243,7 @@ papi_overflow_handler(int EventSet, void *address, long long overflow_vector,
     PW_OVRFLW(n_thread, EventSet)++;
     if ((retval = PAPI_reset(EventSet)) != PAPI_OK)
     {
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_reset", retval);
+        PW_error(__FILE__, __LINE__, "PAPI_reset", retval);
     }
 }
 #endif
@@ -246,14 +270,14 @@ pw_set_opts(int n_thread, int evid)
     options.domain.eventset = evtset;
     options.domain.domain   = PW_DOM;
     if ((retval = PAPI_set_opt(PAPI_DOMAIN, &options)) != PAPI_OK)
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_set_opt", retval);
+        PW_error(__FILE__, __LINE__, "PAPI_set_opt", retval);
 
     /* Granularity */
     memset(&options, 0x0, sizeof(options));
     options.granularity.eventset    = evtset;
     options.granularity.granularity = PW_GRN;
     if ((retval = PAPI_set_opt(PAPI_GRANUL, &options)) != PAPI_OK)
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_set_opt", retval);
+        PW_error(__FILE__, __LINE__, "PAPI_set_opt", retval);
 }
 
 /* Core functions */
@@ -266,6 +290,8 @@ pw_set_opts(int n_thread, int evid)
 void
 pw_init()
 {
+    /* need to know how many counters will be counted in order to perform
+     * multiplexing or not */
     pw_get_num_ctrs();
 #ifdef _OPENMP
 #    pragma omp parallel
@@ -287,23 +313,19 @@ pw_init()
 #    pragma omp master
             {
                 if (PAPI_set_debug(PAPI_VERB_ESTOP) != PAPI_OK)
-                    PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_set_debug",
-                                    retval);
+                    PW_error(__FILE__, __LINE__, "PAPI_set_debug", retval);
                 if ((retval = PAPI_library_init(PAPI_VER_CURRENT))
                     != PAPI_VER_CURRENT)
-                    PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_library_init",
-                                    retval);
-                if ((retval = PAPI_thread_init((void *)omp_get_thread_num))
-                    != PAPI_OK)
-                    PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_thread_init",
-                                    retval);
-                if ((retval = PAPI_set_granularity(PW_GRN)) != PAPI_OK)
-                    PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_set_granularity",
-                                    retval);
+                    PW_error(__FILE__, __LINE__, "PAPI_library_init", retval);
                 if ((pw_multiplexing)
                     && (retval = PAPI_multiplex_init() != PAPI_OK))
-                    PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_multiplex_init",
-                                    retval);
+                    PW_error(__FILE__, __LINE__, "PAPI_multiplex_init", retval);
+                if ((retval = PAPI_thread_init((void *)pthread_self))
+                    != PAPI_OK)
+                    PW_error(__FILE__, __LINE__, "PAPI_thread_init", retval);
+                if ((retval = PAPI_set_granularity(PW_GRN)) != PAPI_OK)
+                    PW_error(__FILE__, __LINE__, "PAPI_set_granularity",
+                             retval);
                 N_THREADS = omp_get_num_threads();
                 PW_thread = (PW_thread_info_t *)malloc(sizeof(PW_thread_info_t)
                                                        * N_THREADS);
@@ -325,8 +347,8 @@ pw_init()
                     if ((retval = PAPI_event_name_to_code(
                              (char *)_pw_eventlist[k], &(pw_eventlist[k])))
                         != PAPI_OK)
-                        PAPI_WRAP_error(__FILE__, __LINE__,
-                                        "PAPI_event_name_to_code", retval);
+                        PW_error(__FILE__, __LINE__, "PAPI_event_name_to_code",
+                                 retval);
                 }
                 pw_eventlist[k] = 0;
             }
@@ -334,37 +356,77 @@ pw_init()
 #    pragma omp critical
             {
                 int n_thread = omp_get_thread_num();
-                int evid;
+                int evid     = 0;
+#    if PW_EXEC_MODE == PW_SNG_EXC
                 for (evid = 0; pw_eventlist[evid] != 0; evid++)
                 {
+#    endif
                     PW_EVTSET(n_thread, evid) = PAPI_NULL;
                     if ((retval =
                              PAPI_create_eventset(&(PW_EVTSET(n_thread, evid))))
                         != PAPI_OK)
-                        PAPI_WRAP_error(__FILE__, __LINE__,
-                                        "PAPI_create_eventset", retval);
-                    if ((pw_multiplexing)
-                        && (PAPI_set_multiplex((PW_EVTSET(n_thread, evid))
-                                               != PAPI_OK)))
-                        PAPI_WRAP_error(__FILE__, __LINE__,
-                                        "PAPI_set_multiplex", -1);
+                        PW_error(__FILE__, __LINE__, "PAPI_create_eventset",
+                                 retval);
+                    if (pw_multiplexing)
+                    {
+                        if (retval = PAPI_assign_eventset_component(
+                                         (PW_EVTSET(n_thread, evid)), 0)
+                                     != PAPI_OK)
+                            PW_error(__FILE__, __LINE__,
+                                     "PAPI_assign_eventset_component", retval);
+                        retval =
+                            PAPI_get_multiplex((PW_EVTSET(n_thread, evid)));
+                        if (retval > 0)
+                            pw_dprintf(PW_D_LOW, "This event set is ready for "
+                                                 "multiplexing\n");
+                        if (retval == 0)
+                        {
+                            pw_dprintf(PW_D_LOW,
+                                       "This event set is not enabled for "
+                                       "multiplexing (thread %d)",
+                                       omp_get_thread_num());
+                        }
+                        if (retval < 0)
+                            PW_error(__FILE__, __LINE__, "PAPI_set_multiplex",
+                                     retval);
+                        retval = PAPI_set_multiplex((PW_EVTSET(n_thread, evid))
+                                                    != PAPI_OK);
+                        if (((retval == PAPI_EINVAL)
+                             && (PAPI_get_multiplex(PW_EVTSET(n_thread, evid)
+                                                    == 1))))
+                        {
+                            pw_dprintf(PW_D_LOW,
+                                       "PAPI_set_multiplex already enabled",
+                                       retval);
+                        } else if (retval != PAPI_OK)
+                        {
+                            PW_error(__FILE__, __LINE__, "PAPI_set_multiplex",
+                                     retval);
+                        }
+                        if ((retval = PAPI_register_thread()) != PAPI_OK)
+                        {
+                            PW_error(__FILE__, __LINE__, "PAPI_register_thread",
+                                     retval);
+                        }
+                    }
+#    if PW_EXEC_MODE == PW_SNG_EXEC
                 }
+#    endif
             }
 #    pragma omp barrier
 #else
     pw_eventset  = PAPI_NULL;
     pw_eventlist = (int *)malloc(sizeof(int) * PW_MAX_COUNTERS);
     if ((retval = PAPI_library_init(PAPI_VER_CURRENT)) != PAPI_VER_CURRENT)
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_library_init", retval);
+        PW_error(__FILE__, __LINE__, "PAPI_library_init", retval);
     if ((retval = PAPI_create_eventset(&pw_eventset)) != PAPI_OK)
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_create_eventset", retval);
+        PW_error(__FILE__, __LINE__, "PAPI_create_eventset", retval);
     for (k = 0; _pw_eventlist[k]; ++k)
     {
         if ((retval = PAPI_event_name_to_code((char *)_pw_eventlist[k],
                                               &(pw_eventlist[k])))
             != PAPI_OK)
-            PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_event_name_to_code",
-                            retval);
+            PW_error(__FILE__, __LINE__, "PAPI_event_name_to_code", retval);
     }
     pw_eventlist[k] = 0;
 #endif
@@ -426,47 +488,46 @@ pw_start_all_counters()
 #endif
             int retval = 1;
             int evid   = 0;
-            for (evid = 0; pw_eventlist[evid] != 0; ++evid)
-            {
-                char              descr[PAPI_MAX_STR_LEN];
-                PAPI_event_info_t evinfo;
-                PAPI_event_code_to_name(pw_eventlist[evid], descr);
 #ifdef PAPI_MULTITHREAD
 #    pragma omp critical
+            {
+                for (evid = 0; pw_eventlist[evid] != 0; ++evid)
                 {
-                    if (PAPI_add_event(PW_EVTSET(n_thread, evid),
-                                       pw_eventlist[evid])
-                        != PAPI_OK)
-                        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_add_event",
-                                        1);
-                    if (PAPI_get_event_info(pw_eventlist[evid], &evinfo)
-                        != PAPI_OK)
-                        PAPI_WRAP_error(__FILE__, __LINE__,
-                                        "PAPI_get_event_info", retval);
-                    pw_set_opts(n_thread, evid);
+                    char descr[PAPI_MAX_STR_LEN];
+                    PAPI_event_code_to_name(pw_eventlist[evid], descr);
+                    retval = PAPI_add_event(PW_EVTSET(n_thread, 0),
+                                            pw_eventlist[evid]);
+                    if ((retval != PAPI_OK) && (retval != PAPI_ECNFLCT))
+                        PW_error(__FILE__, __LINE__, "PAPI_add_event", retval);
+                    if (retval == PAPI_ECNFLCT) pw_dprintf(PW_D_LOW, descr);
 #    ifdef PW_SAMPLING
                     if ((retval = PAPI_overflow(
                              PW_EVTSET(n_thread, evid), pw_eventlist[evid],
                              _pw_samplinglist[evid], PW_OVRFLW_TYPE,
                              papi_overflow_handler))
                         != PAPI_OK)
-                        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_overflow",
-                                        retval);
+                        PW_error(__FILE__, __LINE__, "PAPI_overflow", retval);
 #    endif
                 }
+                pw_set_opts(n_thread, 0);
             }
 #    pragma omp barrier
-            if ((retval = PAPI_start(PW_EVTSET(n_thread, evid))) != PAPI_OK)
-                PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_start", retval);
+            if ((retval = PAPI_start(PW_EVTSET(n_thread, 0))) != PAPI_OK)
+                PW_error(__FILE__, __LINE__, "PAPI_start", retval);
 #else
-        if (PAPI_add_event(pw_eventset, pw_eventlist[evid]) != PAPI_OK)
-            PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_add_event", 1);
+    int retval      = 1;
+    int evid        = 0;
+    for (evid = 0; pw_eventlist[evid] != 0; ++evid)
+    {
+        if ((retval = PAPI_add_event(pw_eventset, pw_eventlist[evid]))
+            != PAPI_OK)
+            PW_error(__FILE__, __LINE__, "PAPI_add_event", retval);
         if (PAPI_get_event_info(pw_eventlist[evid], &evinfo) != PAPI_OK)
-            PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_get_event_info", retval);
+            PW_error(__FILE__, __LINE__, "PAPI_get_event_info", retval);
         pw_set_opts(0, evid);
     }
     if ((retval = PAPI_start(pw_eventset)) != PAPI_OK)
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_start", retval);
+        PW_error(__FILE__, __LINE__, "PAPI_start", retval);
 #endif
 #ifdef _OPENMP
 #    ifndef PAPI_MULTITHREAD
@@ -505,10 +566,9 @@ pw_start_counter(int evid)
                 if (PAPI_add_event(PW_EVTSET(n_thread, evid),
                                    pw_eventlist[evid])
                     != PAPI_OK)
-                    PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_add_event", 1);
+                    PW_error(__FILE__, __LINE__, "PAPI_add_event", 1);
                 if (PAPI_get_event_info(pw_eventlist[evid], &evinfo) != PAPI_OK)
-                    PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_get_event_info",
-                                    retval);
+                    PW_error(__FILE__, __LINE__, "PAPI_get_event_info", retval);
                 pw_set_opts(n_thread, evid);
 #    ifdef PW_SAMPLING
                 if ((retval = PAPI_overflow(
@@ -516,21 +576,20 @@ pw_start_counter(int evid)
                          _pw_samplinglist[evid], PW_OVRFLW_TYPE,
                          papi_overflow_handler))
                     != PAPI_OK)
-                    PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_overflow",
-                                    retval);
+                    PW_error(__FILE__, __LINE__, "PAPI_overflow", retval);
 #    endif
             }
 #    pragma omp barrier
             if ((retval = PAPI_start(PW_EVTSET(n_thread, evid))) != PAPI_OK)
-                PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_start", retval);
+                PW_error(__FILE__, __LINE__, "PAPI_start", retval);
 #else
     if (PAPI_add_event(pw_eventset, pw_eventlist[evid]) != PAPI_OK)
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_add_event", 1);
+        PW_error(__FILE__, __LINE__, "PAPI_add_event", 1);
     if (PAPI_get_event_info(pw_eventlist[evid], &evinfo) != PAPI_OK)
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_get_event_info", retval);
+        PW_error(__FILE__, __LINE__, "PAPI_get_event_info", retval);
     pw_set_opts(0, evid);
     if ((retval = PAPI_start(pw_eventset)) != PAPI_OK)
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_start", retval);
+        PW_error(__FILE__, __LINE__, "PAPI_start", retval);
 #endif
 #ifdef _OPENMP
 #    ifndef PAPI_MULTITHREAD
@@ -563,49 +622,53 @@ pw_stop_all_counters()
             int        retval;
             int        n_thread = omp_get_thread_num();
             long long *values   = NULL;
+#    if PW_EXEC_MODE == PW_SNG_EXC
             for (evid = 0; pw_eventlist[evid] != 0; evid++)
             {
+#    endif
 #    ifdef PW_SAMPLING
                 if ((retval = PAPI_accum(PW_EVTSET(n_thread, evid),
                                          &(PW_VALUES(n_thread, evid))))
                     != PAPI_OK)
-                    PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_accum", retval);
+                    PW_error(__FILE__, __LINE__, "PAPI_accum", retval);
                 PW_VALUES(n_thread, evid) +=
                     (PW_OVRFLW(n_thread, evid) * _pw_samplinglist[evid]);
 #    else
-                values = &PW_VALUES(n_thread, evid);
+            values       = &PW_VALUES(n_thread, evid);
 #    endif
                 if ((retval = PAPI_stop(PW_EVTSET(n_thread, evid),
                                         (long long *)values))
                     != PAPI_OK)
-                    PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_stop", retval);
+                    PW_error(__FILE__, __LINE__, "PAPI_stop", retval);
                 if ((retval = PAPI_cleanup_eventset(PW_EVTSET(n_thread, evid)))
                     != PAPI_OK)
-                    PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_cleanup_eventset",
-                                    retval);
+                    PW_error(__FILE__, __LINE__, "PAPI_cleanup_eventset",
+                             retval);
                 if ((retval =
                          PAPI_destroy_eventset(&(PW_EVTSET(n_thread, evid))))
                     != PAPI_OK)
-                    PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_destroy_eventset",
-                                    retval);
+                    PW_error(__FILE__, __LINE__, "PAPI_destroy_eventset",
+                             retval);
+#    if PW_EXEC_MODE == PW_SNG_EXC
             }
+#    endif
 #else
     int       evid;
     int       retval;
     long long values[1];
     values[0] = 0;
     if ((retval = PAPI_read(pw_eventset, &values[0])) != PAPI_OK)
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_read", retval);
+        PW_error(__FILE__, __LINE__, "PAPI_read", retval);
 
     if ((retval = PAPI_stop(pw_eventset, NULL)) != PAPI_OK)
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_stop", retval);
+        PW_error(__FILE__, __LINE__, "PAPI_stop", retval);
     for (evid = 0; pw_eventlist[evid] != 0; evid++)
     {
         pw_values[evid] = values[0];
 
         if ((retval = PAPI_remove_event(pw_eventset, pw_eventlist[evid]))
             != PAPI_OK)
-            PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_remove_event", retval);
+            PW_error(__FILE__, __LINE__, "PAPI_remove_event", retval);
     }
 #endif
 #ifdef _OPENMP
@@ -641,39 +704,37 @@ pw_stop_counter(int evid)
             if ((retval = PAPI_accum(PW_EVTSET(n_thread, evid),
                                      &(PW_VALUES(n_thread, evid))))
                 != PAPI_OK)
-                PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_accum", retval);
+                PW_error(__FILE__, __LINE__, "PAPI_accum", retval);
             PW_VALUES(n_thread, evid) +=
                 (PW_OVRFLW(n_thread, evid) * _pw_samplinglist[evid]);
 #    else
-            values = &PW_VALUES(n_thread, evid);
+            values       = &PW_VALUES(n_thread, evid);
 #    endif
             if ((retval =
                      PAPI_stop(PW_EVTSET(n_thread, evid), (long long *)values))
                 != PAPI_OK)
-                PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_stop", retval);
+                PW_error(__FILE__, __LINE__, "PAPI_stop", retval);
             if ((retval = PAPI_cleanup_eventset(PW_EVTSET(n_thread, evid)))
                 != PAPI_OK)
-                PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_cleanup_eventset",
-                                retval);
+                PW_error(__FILE__, __LINE__, "PAPI_cleanup_eventset", retval);
             if ((retval = PAPI_destroy_eventset(&(PW_EVTSET(n_thread, evid))))
                 != PAPI_OK)
-                PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_destroy_eventset",
-                                retval);
+                PW_error(__FILE__, __LINE__, "PAPI_destroy_eventset", retval);
 #else
     int       retval;
     long long values[1];
     values[0] = 0;
     if ((retval = PAPI_read(pw_eventset, &values[0])) != PAPI_OK)
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_read", retval);
+        PW_error(__FILE__, __LINE__, "PAPI_read", retval);
 
     if ((retval = PAPI_stop(pw_eventset, NULL)) != PAPI_OK)
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_stop", retval);
+        PW_error(__FILE__, __LINE__, "PAPI_stop", retval);
 
     pw_values[evid] = values[0];
 
     if ((retval = PAPI_remove_event(pw_eventset, pw_eventlist[evid]))
         != PAPI_OK)
-        PAPI_WRAP_error(__FILE__, __LINE__, "PAPI_remove_event", retval);
+        PW_error(__FILE__, __LINE__, "PAPI_remove_event", retval);
 #endif
 #ifdef _OPENMP
 #    ifndef PAPI_MULTITHREAD
@@ -698,7 +759,7 @@ pw_print()
     {
         if (omp_get_thread_num() == pw_counters_threadid)
         {
-#        ifdef PAPI_WRAPPER_VERBOSE
+#        ifdef PW_VERBOSE
             verbose = 1;
 #        endif
 #    endif
