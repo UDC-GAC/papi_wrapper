@@ -28,9 +28,30 @@
 /* Need to compile with -lpapi flag */
 #include <papi.h>
 
-/* Macros for execution mode */
-#define PW_SNG_EXC 0x00
-#define PW_ALL_EXC 0x01
+#define PW_DEBUG
+
+/* Defined macros */
+#define PW_D_LOW 0x01
+#define PW_D_MED 0x02
+#define PW_D_HIGH 0x03
+
+#define PW_SNG_EXC 0x10
+#define PW_ALL_EXC 0x11
+
+#define PW_NUM_EVTSET 30
+#define PW_MAX_COUNTERS 96
+
+/* Debug mode */
+#ifdef PW_DEBUG
+#    ifndef PW_DEBUG_LVL
+#        define PW_DEBUG_LVL PW_D_LOW
+#    endif
+#endif
+
+/* Default execution mode (-DPW_EXEC_MODE): single event (slow mode) */
+#ifndef PW_EXEC_MODE
+#    define PW_EXEC_MODE PW_ALL_EXC
+#endif
 
 /* Default granularity (-DPW_GRN) for all EventSets*/
 #ifndef PW_GRN
@@ -41,14 +62,6 @@
 #ifndef PW_DOM
 #    define PW_DOM PAPI_DOM_KERNEL
 #endif
-
-/* Default execution mode (-DPW_EXEC_MODE): single event (slow mode) */
-#ifndef PW_EXEC_MODE
-#    define PW_EXEC_MODE PW_ALL_EXC
-#endif
-
-#define PW_NUM_EVTSET 30
-#define PW_MAX_COUNTERS 96
 
 /**
  * @brief Struct to handle each PAPI thread info
