@@ -28,8 +28,6 @@
 /* Need to compile with -lpapi flag */
 #include <papi.h>
 
-#define PW_DEBUG
-
 /* Defined macros */
 #define PW_D_LOW 0x01
 #define PW_D_MED 0x02
@@ -42,6 +40,10 @@
 #define PW_MAX_COUNTERS 96
 
 /* Debug mode */
+#ifdef DEBUG
+#    define PW_DEBUG
+#endif
+
 #ifdef PW_DEBUG
 #    ifndef PW_DEBUG_LVL
 #        define PW_DEBUG_LVL PW_D_LOW
@@ -50,7 +52,7 @@
 
 /* Default execution mode (-DPW_EXEC_MODE): single event (slow mode) */
 #ifndef PW_EXEC_MODE
-#    define PW_EXEC_MODE PW_ALL_EXC
+#    define PW_EXEC_MODE PW_SNG_EXC
 #endif
 
 /* Default granularity (-DPW_GRN) for all EventSets*/
@@ -112,7 +114,7 @@ extern PW_thread_info_t *PW_thread;
 extern int *             pw_eventlist;
 #define pw_set_thread_report(x) pw_counters_threadid = x;
 
-#if PW_EXEC_MODE == PW_SNG_MODE
+#if PW_EXEC_MODE == PW_SNG_EXC
 #    define pw_start_instruments                        \
         pw_prepare_instruments();                       \
         pw_init();                                      \

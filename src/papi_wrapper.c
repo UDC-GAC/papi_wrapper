@@ -150,10 +150,11 @@ pw_get_num_ctrs()
     {
         PW_error(__FILE__, __LINE__, "PAPI_num_counters", pw_num_hw_ctrs);
     }
-    pw_multiplexing   = (pw_num_ctrs > pw_num_hw_ctrs);
+#if PW_EXEC_MODE == PW_ALL_EXC
+    pw_multiplexing = (pw_num_ctrs > pw_num_hw_ctrs);
+#endif
     int max_multiplex = PAPI_get_opt(PAPI_MAX_MPX_CTRS, NULL);
     pw_dprintf(PW_D_LOW, "max_multiplex = %d", max_multiplex);
-    pw_multiplexing = 1;
     pw_dprintf(PW_D_LOW,
                "pw_num_ctrs = %d "
                "pw_num_hw_ctrs = %d "
@@ -409,7 +410,7 @@ pw_init()
                                      retval);
                         }
                     }
-#    if PW_EXEC_MODE == PW_SNG_EXEC
+#    if PW_EXEC_MODE == PW_SNG_EXC
                 }
 #    endif
             }
