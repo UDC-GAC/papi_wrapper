@@ -12,15 +12,15 @@ It is only needed to rewrite our code as:
 ```
 #include <papi_wrapper.h>
 ...
-pw_start_instruments /* starts automatically PAPI counters */
+pw_start_instruments; /* starts automatically PAPI counters */
 
 /* region of interest (ROI) to measure */
 
-pw_stop_instruments /* stop counting */
-pw_print_instruments /* print results */
+pw_stop_instruments; /* stop counting */
+pw_print_instruments; /* print results */
 ```
 
-This way, it is only needed to add the header `#include <papi_wrapper.h>` to the source code and compile with `-I/source/to/papi-wrapper /source/to/papi-wrapper/papi_wrapper.c`.
+This way, it is only needed to add the header `#include <papi_wrapper.h>` to the source code and compile with `-I/source/to/papi-wrapper papi_wrapper.c`.
 
 ## Options
 
