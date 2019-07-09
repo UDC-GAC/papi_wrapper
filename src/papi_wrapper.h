@@ -1,6 +1,6 @@
 /**
  * papi_wrapper.h
- * Copyright (c) 2018 Marcos Horro <marcos.horro@udc.gal>
+ * Copyright (c) 2019 Marcos Horro <marcos.horro@udc.gal>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,33 @@
 /* Need to compile with -lpapi flag */
 #include <papi.h>
 
+/* Defined macros */
+#define PW_D_LOW 0x01
+#define PW_D_MED 0x02
+#define PW_D_HIGH 0x03
+
+#define PW_SNG_EXC 0x10
+#define PW_ALL_EXC 0x11
+
+#define PW_NUM_EVTSET 30
+#define PW_MAX_COUNTERS 96
+
+/* Debug mode */
+#ifdef DEBUG
+#    define PW_DEBUG
+#endif
+
+#ifdef PW_DEBUG
+#    ifndef PW_DEBUG_LVL
+#        define PW_DEBUG_LVL PW_D_LOW
+#    endif
+#endif
+
+/* Default execution mode (-DPW_EXEC_MODE): single event (slow mode) */
+#ifndef PW_EXEC_MODE
+#    define PW_EXEC_MODE PW_SNG_EXC
+#endif
+
 /* Default granularity (-DPW_GRN) for all EventSets*/
 #ifndef PW_GRN
 #    define PW_GRN PAPI_GRN_THR
@@ -35,10 +62,8 @@
 
 /* Default domain (-DPW_DOM) for each EventSet */
 #ifndef PW_DOM
-#    define PW_DOM PAPI_DOM_ALL
+#    define PW_DOM PAPI_DOM_KERNEL
 #endif
-
-#define PW_NUM_EVTSET 10
 
 /**
  * @brief Struct to handle each PAPI thread info
@@ -57,8 +82,6 @@ typedef struct PW_thread_info
     long long *pw_overflows;
 #endif
 } PW_thread_info_t;
-
-#define PW_MAX_COUNTERS 96
 
 /* Useful macros */
 #define PW_VALUES(n_thread, evid) (PW_thread[n_thread].pw_values[evid])
@@ -90,18 +113,30 @@ typedef struct PW_thread_info
 extern PW_thread_info_t *PW_thread;
 extern int *             pw_eventlist;
 #define pw_set_thread_report(x) pw_counters_threadid = x;
-#define pw_start_instruments                        \
-    pw_prepare_instruments();                       \
-    pw_init();                                      \
-    int evid;                                       \
-    for (evid = 0; pw_eventlist[evid] != 0; evid++) \
-    {                                               \
-        if (pw_start_counter(evid)) continue;
 
-#define pw_stop_instruments \
-    pw_stop_counter(evid);  \
-    }                       \
-    pw_close();
+#if PW_EXEC_MODE == PW_SNG_EXC
+#    define pw_start_instruments                        \
+        pw_prepare_instruments();                       \
+        pw_init();                                      \
+        int evid;                                       \
+        for (evid = 0; pw_eventlist[evid] != 0; evid++) \
+        {                                               \
+            if (pw_start_counter(evid)) continue;
+
+#    define pw_stop_instruments \
+        pw_stop_counter(evid);  \
+        }                       \
+        pw_close();
+#else
+#    define pw_start_instruments  \
+        pw_prepare_instruments(); \
+        pw_init();                \
+        pw_start_all_counters();
+
+#    define pw_stop_instruments \
+        pw_stop_all_counters(); \
+        pw_close();
+#endif
 
 #define pw_print_instruments pw_print();
 
@@ -110,8 +145,12 @@ extern void
 pw_prepare_instruments();
 extern int
 pw_start_counter(int evid);
+extern int
+pw_start_all_counters();
 extern void
 pw_stop_counter(int evid);
+extern void
+pw_stop_all_counters();
 extern void
 pw_init();
 extern void
