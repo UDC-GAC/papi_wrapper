@@ -37,12 +37,12 @@
 #if defined(_OPENMP)
 #    include <omp.h>
 #    include <pthread.h>
-static int N_THREADS = 1;
-#    ifdef N_CORES
+#    ifndef N_THREADS
+#        ifdef N_CORES
 N_THREADS = N_CORES;
+#        endif
 #    endif
 #endif
-
 /* Include definitions */
 #include "papi_wrapper.h"
 
@@ -92,7 +92,7 @@ PW_thread_info_t *PW_thread;
  * @note this flush is broadcast and extracted
  */
 void
-intel_clflush(volatile void *p, unsigned int allocation_size)
+pw_intel_clflush(volatile void *p, unsigned int allocation_size)
 {
     const size_t cache_line = 64;
     const char * cp         = (const char *)p;
@@ -121,7 +121,7 @@ pw_prepare_instruments()
     int     cache_elemns = PW_CACHE_SIZE / sizeof(double);
     double *flush        = (double *)calloc(cache_elemns, sizeof(double));
 #if defined(__x86_64)
-    intel_clflush(flush, cache_elemns * sizeof(double));
+    pw_intel_clflush(flush, cache_elemns * sizeof(double));
 #endif
     free(flush);
 }
