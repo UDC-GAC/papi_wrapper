@@ -41,28 +41,28 @@
 
 /* Debug mode */
 #ifdef DEBUG
-#    define PW_DEBUG
+#define PW_DEBUG
 #endif
 
 #ifdef PW_DEBUG
-#    ifndef PW_DEBUG_LVL
-#        define PW_DEBUG_LVL PW_D_LOW
-#    endif
+#ifndef PW_DEBUG_LVL
+#define PW_DEBUG_LVL PW_D_LOW
+#endif
 #endif
 
 /* Default execution mode (-DPW_EXEC_MODE): single event (slow mode) */
 #ifndef PW_EXEC_MODE
-#    define PW_EXEC_MODE PW_SNG_EXC
+#define PW_EXEC_MODE PW_SNG_EXC
 #endif
 
 /* Default granularity (-DPW_GRN) for all EventSets*/
 #ifndef PW_GRN
-#    define PW_GRN PAPI_GRN_THR
+#define PW_GRN PAPI_GRN_THR
 #endif
 
 /* Default domain (-DPW_DOM) for each EventSet */
 #ifndef PW_DOM
-#    define PW_DOM PAPI_DOM_KERNEL
+#define PW_DOM PAPI_DOM_KERNEL
 #endif
 
 /**
@@ -72,14 +72,13 @@
  * counters. The same way, we also enable some attributes when sampling is
  * enabled.
  */
-typedef struct PW_thread_info
-{
-    int *      pw_eventset;
-    int        pw_domain;
-    long long *pw_values;
+typedef struct PW_thread_info {
+  int *pw_eventset;
+  int pw_domain;
+  long long *pw_values;
 #ifdef PW_SAMPLING
-    int        pw_overflow_enabled;
-    long long *pw_overflows;
+  int pw_overflow_enabled;
+  long long *pw_overflows;
 #endif
 } PW_thread_info_t;
 
@@ -87,75 +86,84 @@ typedef struct PW_thread_info
 #define PW_VALUES(n_thread, evid) (PW_thread[n_thread].pw_values[evid])
 #define PW_EVTSET(n_thread, evid) (PW_thread[n_thread].pw_eventset[evid])
 #ifdef PW_SAMPLING
-#    define PW_OVRFLW_ON(n_thread) (PW_thread[n_thread].pw_overflow_enabled = 1)
-#    define PW_OVRFLW_OFF(n_thread) \
-        (PW_thread[n_thread].pw_overflow_enabled = 0)
-#    define PW_OVRFLW(n_thread, evid) (PW_thread[n_thread].pw_overflows[evid])
-#    define PW_OVRFLW_RST(n_thread, evid) \
-        (PW_thread[n_thread].pw_overflows[evid] = 0)
+#define PW_OVRFLW_ON(n_thread) (PW_thread[n_thread].pw_overflow_enabled = 1)
+#define PW_OVRFLW_OFF(n_thread) (PW_thread[n_thread].pw_overflow_enabled = 0)
+#define PW_OVRFLW(n_thread, evid) (PW_thread[n_thread].pw_overflows[evid])
+#define PW_OVRFLW_RST(n_thread, evid) \
+  (PW_thread[n_thread].pw_overflows[evid] = 0)
 /* This is the recommended type of overflowing with PAPI. See PAPI_overflow
  * manual for more details */
-#    define PW_OVRFLW_TYPE PAPI_OVERFLOW_FORCE_SW
+#define PW_OVRFLW_TYPE PAPI_OVERFLOW_FORCE_SW
 #endif
 
 /* File configurations */
 #ifndef PAPI_FILE_LIST
-#    define PAPI_FILE_LIST "papi_counters.list"
+#define PAPI_FILE_LIST "papi_counters.list"
 #endif
 
 #ifdef PW_SAMPLING
-#    ifndef PAPI_FILE_SAMPLING
-#        define PAPI_FILE_SAMPLING "papi_sampling.list"
-#    endif
+#ifndef PAPI_FILE_SAMPLING
+#define PAPI_FILE_SAMPLING "papi_sampling.list"
+#endif
 #endif
 
 /* some other declarations */
 extern PW_thread_info_t *PW_thread;
-extern int *             pw_eventlist;
+extern int *pw_eventlist;
 #define pw_set_thread_report(x) pw_counters_threadid = x;
 
-#if PW_EXEC_MODE == PW_SNG_EXC
-#    define pw_start_instruments                        \
-        pw_prepare_instruments();                       \
-        pw_init();                                      \
-        int evid;                                       \
-        for (evid = 0; pw_eventlist[evid] != 0; evid++) \
-        {                                               \
-            if (pw_start_counter(evid)) continue;
+#define pw_start_instruments_loop(th)               \
+  int evid;                                         \
+  for (evid = 0; pw_eventlist[evid] != 0; evid++) { \
+    if (pw_start_counter_thread(evid, th)) continue;
+#define pw_stop_instruments_loop(th) \
+  pw_stop_counter_thread(evid, th);  \
+  }                                  \
+  pw_close();
 
-#    define pw_stop_instruments \
-        pw_stop_counter(evid);  \
-        }                       \
-        pw_close();
+#ifndef PAPI_WITHIN_LOOP
+#define pw_start_instruments                        \
+  pw_prepare_instruments();                         \
+  pw_init();                                        \
+  int evid;                                         \
+  for (evid = 0; pw_eventlist[evid] != 0; evid++) { \
+    if (pw_start_counter(evid)) continue;
+
+#define pw_stop_instruments \
+  pw_stop_counter(evid);    \
+  }                         \
+  pw_close();
 #else
-#    define pw_start_instruments  \
-        pw_prepare_instruments(); \
-        pw_init();                \
-        pw_start_all_counters();
+#define pw_start_instruments                        \
+  int evid;                                         \
+  for (evid = 0; pw_eventlist[evid] != 0; evid++) { \
+    if (pw_start_counter(evid)) continue;
 
-#    define pw_stop_instruments \
-        pw_stop_all_counters(); \
-        pw_close();
+#define pw_stop_instruments \
+  pw_stop_counter(evid);    \
+  }                         \
+  pw_close();
+#endif
+
+#ifdef PAPI_WITHIN_LOOP
+#define pw_init_instruments \
+  pw_prepare_instruments(); \
+  pw_init();                \
+  long long pw_eventlist_val[1024];
 #endif
 
 #define pw_print_instruments pw_print();
 
 /* function declarations */
-extern void
-pw_prepare_instruments();
-extern int
-pw_start_counter(int evid);
-extern int
-pw_start_all_counters();
-extern void
-pw_stop_counter(int evid);
-extern void
-pw_stop_all_counters();
-extern void
-pw_init();
-extern void
-pw_close();
-extern void
-pw_print();
+extern void pw_prepare_instruments();
+extern int pw_start_counter(int evid);
+extern int pw_start_counter_thread(int evid, int th);
+extern int pw_start_all_counters();
+extern void pw_stop_counter(int evid);
+extern void pw_stop_counter_thread(int evid, int th);
+extern void pw_stop_all_counters();
+extern void pw_init();
+extern void pw_close();
+extern void pw_print();
 
 #endif /* !PAPI_WRAPPER_H */
