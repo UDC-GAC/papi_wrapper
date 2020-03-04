@@ -116,43 +116,31 @@ extern int *pw_eventlist;
   int evid;                                         \
   for (evid = 0; pw_eventlist[evid] != 0; evid++) { \
     if (pw_start_counter_thread(evid, th)) continue;
+
 #define pw_stop_instruments_loop(th) \
   pw_stop_counter_thread(evid, th);  \
-  }                                  \
-  pw_close();
+  }
 
-#ifndef PAPI_WITHIN_LOOP
-#define pw_start_instruments                        \
-  pw_prepare_instruments();                         \
-  pw_init();                                        \
-  int evid;                                         \
-  for (evid = 0; pw_eventlist[evid] != 0; evid++) { \
-    if (pw_start_counter(evid)) continue;
-
-#define pw_stop_instruments \
-  pw_stop_counter(evid);    \
-  }                         \
-  pw_close();
-#else
-#define pw_start_instruments                        \
-  int evid;                                         \
-  for (evid = 0; pw_eventlist[evid] != 0; evid++) { \
-    if (pw_start_counter(evid)) continue;
-
-#define pw_stop_instruments \
-  pw_stop_counter(evid);    \
-  }                         \
-  pw_close();
-#endif
-
-#ifdef PAPI_WITHIN_LOOP
 #define pw_init_instruments \
   pw_prepare_instruments(); \
-  pw_init();                \
-  long long pw_eventlist_val[1024];
-#endif
+  pw_init();
 
-#define pw_print_instruments pw_print();
+#define pw_start_instruments                        \
+  int evid;                                         \
+  for (evid = 0; pw_eventlist[evid] != 0; evid++) { \
+    if (pw_start_counter(evid)) continue;
+
+#define pw_init_start_instruments \
+  pw_init_instruments;            \
+  pw_start_instruments;
+
+#define pw_stop_instruments \
+  pw_stop_counter(evid);    \
+  }
+
+#define pw_print_instruments \
+  pw_print();                \
+  pw_close();
 
 /* function declarations */
 extern void pw_prepare_instruments();
