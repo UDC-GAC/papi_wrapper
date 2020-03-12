@@ -115,6 +115,7 @@ extern int *pw_eventlist;
 #define pw_start_instruments_loop(th)               \
   int evid;                                         \
   for (evid = 0; pw_eventlist[evid] != 0; evid++) { \
+    pw_prepare_instruments();                       \
     if (pw_start_counter_thread(evid, th)) continue;
 
 #define pw_stop_instruments_loop(th) \
@@ -122,12 +123,13 @@ extern int *pw_eventlist;
   }
 
 #define pw_init_instruments \
-  pw_prepare_instruments(); \
-  pw_init();
+  pw_init();                \
+  pw_prepare_instruments();
 
 #define pw_start_instruments                        \
   int evid;                                         \
   for (evid = 0; pw_eventlist[evid] != 0; evid++) { \
+    pw_prepare_instruments();                       \
     if (pw_start_counter(evid)) continue;
 
 #define pw_init_start_instruments \
@@ -142,7 +144,7 @@ extern int *pw_eventlist;
   pw_print();                \
   pw_close();
 
-/* function declarations */
+/* Function declarations */
 extern void pw_prepare_instruments();
 extern int pw_start_counter(int evid);
 extern int pw_start_counter_thread(int evid, int th);

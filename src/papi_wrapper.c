@@ -156,12 +156,17 @@ void pw_get_num_ctrs() {
  *
  */
 void pw_prepare_instruments() {
-  int cache_elemns = PW_CACHE_SIZE / sizeof(double);
-  double *flush = (double *)calloc(cache_elemns, sizeof(double));
+#pragma omp parallel
+  {
+    int cache_elemns = PW_CACHE_SIZE / sizeof(double);
+    /* calloc() sets memory to zero */
+    double *flush = (double *)calloc(cache_elemns, sizeof(double));
 #if defined(__x86_64)
-  pw_intel_clflush(flush, cache_elemns * sizeof(double));
+    pw_intel_clflush(flush, cache_elemns * sizeof(double));
 #endif
-  free(flush);
+    free(flush);
+#pragma omp barrier
+  }
 }
 
 /**
