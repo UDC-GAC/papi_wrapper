@@ -1,4 +1,4 @@
-# papi_wrapper
+# PAPI wrapper
 Simple wrapper for PAPI most common used functions: set up events, start counters, stop counters. Also simplifying setting up some options such as domain, granularity or overflow.
 
 PAPI's low-level API allows programmers to program different hardware counters while executing a program. However, programming those counters may introduce a lot of complex code onto the original program. Besides, configuring properly PAPI may be tedious. For these reasons we have created a set of macros in order to simplify the problem, while configuring PAPI at compilation time: either using flags or files.
@@ -12,6 +12,7 @@ It is only needed to rewrite our code as:
 ```
 #include <papi_wrapper.h>
 ...
+pw_init_instruments; /* initialize counters */
 pw_start_instruments; /* starts automatically PAPI counters */
 
 /* region of interest (ROI) to measure */
@@ -29,7 +30,7 @@ Configuration files (see their format in the repo):
  * `-DPAPI_FILE_SAMPLING=<file>`. Default: `papi_sampling.list`. Contains the threshold of counters specified in `PAPI_FILE_LIST`. Useless if `PW_SAMPLING` not specified.
 
 Configuration parameters:
- * `-DPAPI_MULTITHREAD` - disabled by default. If not defined, only `PAPIWRAP_THREAD_MONITOR` will count events.
+ * `-DPAPI_MULTITHREAD` - disabled by default. If not defined, only `PAPIWRAP_THREAD_MONITOR` will count events (only one thread).
  * `-DPAPI_VERBOSE` - disabled by default. More text in the output and errors.
  * `-DPW_GRN=<granularity>` - by default: `PAPI_GRN_MIN`.
  * `-DPW_DOM=<domain>` - by default: `PAPI_DOM_ALL`.
@@ -38,5 +39,17 @@ Configuration parameters:
 ## Roadmap
 Refer to project `roadmap` in projects.
 
+## Contact
+
+Maintainer:
+  * Marcos Horro (marcos.horro (at) udc.gal)
+Authors:
+  * Marcos Horro
+  * Dr. Gabriel Rodríguez
+
 ## Credits
 This version is based on [PolyBench](https://sourceforge.net/projects/polybench/), under GPLv2 license.
+
+## License
+
+MIT License.
