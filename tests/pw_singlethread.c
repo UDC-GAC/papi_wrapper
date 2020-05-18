@@ -9,7 +9,6 @@ main()
     int N = 1000;
     int x[N];
     pw_init_start_instruments;
-#pragma omp parallel for
     for (int i = 0; i < N; ++i)
     {
         x[i] = i * 42.3;

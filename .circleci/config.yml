@@ -1,0 +1,39 @@
+version: 2
+
+workflows:
+  version: 2
+  dist-compile:
+    jobs:
+      - compile
+      - test:
+          requires: 
+            - compile
+jobs:
+  compile:
+    parallelism: 2
+    docker:
+      - image: gcc:8.2
+    steps:
+      - checkout
+      #split all c files based on the index ID we're running on, pass subset to gcc compile
+      # - run: circleci tests glob "**/*.c" | circleci tests split --split-by=filesize | xargs gcc -c 
+      - run: mv tests
+      - run: sh compile.sh
+      # move compiled files to specific folder and persist to workspace
+      - run: mkdir output && mv *.o output
+      - persist_to_workspace:
+          root: output
+          paths:
+            - "*.o"
+  test:
+    docker:
+      - image: gcc:8.2
+    steps:
+      # instead of checking out, restore workspace (will merge all parallel containers from previous job)
+      - attach_workspace:
+          at: output
+      - run: sudo sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
+      - run: ls -la output
+      - run: mv output/* .
+
+

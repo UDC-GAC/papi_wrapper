@@ -260,7 +260,7 @@ pw_set_opts(int __pw_nthread, int __pw_evid)
     int           __pw_retval;
     PAPI_option_t options;
 
-#ifdef PAPI_MULTITHREAD
+#ifdef PW_MULTITHREAD
     int evtset = PW_EVTSET(__pw_nthread, __pw_evid);
 #else
     int evtset = pw_eventset;
@@ -297,7 +297,7 @@ pw_init()
 #ifdef _OPENMP
 #    pragma omp parallel
     {
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
 #        pragma omp master
         {
             if (omp_get_max_threads() < pw_counters_threadid)
@@ -310,7 +310,7 @@ pw_init()
 #endif
             int __pw_retval;
             int k;
-#ifdef PAPI_MULTITHREAD
+#ifdef PW_MULTITHREAD
 #    pragma omp master
             {
                 int __pw_nthreads = omp_get_num_threads();
@@ -462,7 +462,7 @@ pw_init()
     pw_eventlist[k] = 0;
 #endif
 #ifdef _OPENMP
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
         }
 #    endif
     }
@@ -481,7 +481,7 @@ pw_close()
 #ifdef _OPENMP
 #    pragma omp parallel
     {
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
         if (omp_get_thread_num() == pw_counters_threadid)
         {
             if (PAPI_is_initialized()) PAPI_shutdown();
@@ -507,7 +507,7 @@ pw_start_all_counters()
 #ifdef _OPENMP
 #    pragma omp parallel
     {
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
         if (omp_get_thread_num() == pw_counters_threadid)
         {
 #    else
@@ -516,7 +516,7 @@ pw_start_all_counters()
 #endif
             int __pw_retval = 1;
             int __pw_evid   = 0;
-#ifdef PAPI_MULTITHREAD
+#ifdef PW_MULTITHREAD
 #    pragma omp critical
             {
                 for (__pw_evid = 0; pw_eventlist[__pw_evid] != 0; ++__pw_evid)
@@ -563,7 +563,7 @@ pw_start_all_counters()
         PW_error(__FILE__, __LINE__, "PAPI_start", __pw_retval);
 #endif
 #ifdef _OPENMP
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
         }
 #    endif
     }
@@ -583,7 +583,7 @@ pw_start_counter(int __pw_evid)
 #ifdef _OPENMP
 #    pragma omp parallel
     {
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
         if (omp_get_thread_num() == pw_counters_threadid)
         {
 #    endif
@@ -592,7 +592,7 @@ pw_start_counter(int __pw_evid)
             int               __pw_retval = 1;
             PAPI_event_info_t evinfo;
             PAPI_event_code_to_name(pw_eventlist[__pw_evid], descr);
-#ifdef PAPI_MULTITHREAD
+#ifdef PW_MULTITHREAD
             int __pw_nthread = omp_get_thread_num();
 #    pragma omp critical
             {
@@ -628,7 +628,7 @@ pw_start_counter(int __pw_evid)
         PW_error(__FILE__, __LINE__, "PAPI_start", __pw_retval);
 #endif
 #ifdef _OPENMP
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
         }
 #    endif
     }
@@ -711,12 +711,12 @@ pw_stop_all_counters()
 #ifdef _OPENMP
 #    pragma omp parallel
     {
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
         if (omp_get_thread_num() == pw_counters_threadid)
         {
 #    endif
 #endif
-#ifdef PAPI_MULTITHREAD
+#ifdef PW_MULTITHREAD
             int        __pw_evid;
             int        __pw_retval;
             int        __pw_nthread = omp_get_thread_num();
@@ -775,7 +775,7 @@ pw_stop_all_counters()
     }
 #endif
 #ifdef _OPENMP
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
         }
 #    endif
     }
@@ -794,12 +794,12 @@ pw_stop_counter(int __pw_evid)
 #ifdef _OPENMP
 #    pragma omp parallel
     {
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
         if (omp_get_thread_num() == pw_counters_threadid)
         {
 #    endif
 #endif
-#ifdef PAPI_MULTITHREAD
+#ifdef PW_MULTITHREAD
             int        __pw_retval;
             int        __pw_nthread = omp_get_thread_num();
             long long *values       = NULL;
@@ -846,7 +846,7 @@ pw_stop_counter(int __pw_evid)
         PW_error(__FILE__, __LINE__, "PAPI_remove_event", __pw_retval);
 #endif
 #ifdef _OPENMP
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
         }
 #    endif
     }
@@ -896,7 +896,7 @@ pw_print()
 {
     int verbose = 0;
 #ifdef _OPENMP
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
 #        pragma omp parallel
     {
         if (omp_get_thread_num() == pw_counters_threadid)
@@ -906,7 +906,7 @@ pw_print()
 #        endif
 #    endif
 #endif
-#ifdef PAPI_MULTITHREAD
+#ifdef PW_MULTITHREAD
             int __pw_nthreads = 1;
 #    pragma omp parallel
             {
@@ -946,7 +946,7 @@ pw_print()
     printf("\n");
 #endif
 #ifdef _OPENMP
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
         }
     }
 #        pragma omp barrier
@@ -963,7 +963,7 @@ pw_print_sub()
 {
     int verbose = 0;
 #ifdef _OPENMP
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
 #        pragma omp parallel
     {
         if (omp_get_thread_num() == pw_counters_threadid)
@@ -973,7 +973,7 @@ pw_print_sub()
 #        endif
 #    endif
 #endif
-#ifdef PAPI_MULTITHREAD
+#ifdef PW_MULTITHREAD
             int __pw_nthreads = 1;
 #    pragma omp parallel
             {
@@ -1022,7 +1022,7 @@ pw_print_sub()
     printf("\n");
 #endif
 #ifdef _OPENMP
-#    ifndef PAPI_MULTITHREAD
+#    ifndef PW_MULTITHREAD
         }
     }
 #        pragma omp barrier
