@@ -6,18 +6,20 @@ workflows:
     jobs:
       - compile
       - test:
-          requires: 
+          requires:
             - compile
 jobs:
   compile:
     parallelism: 2
-    docker:
-      - image: gcc:8.2
+    #docker:
+    #   - image: gcc:8.2
+    machine:
+      image: ubuntu-1604:201903-01
     steps:
       - checkout
       #split all c files based on the index ID we're running on, pass subset to gcc compile
-      # - run: circleci tests glob "**/*.c" | circleci tests split --split-by=filesize | xargs gcc -c 
-      - run: mv tests
+      # - run: circleci tests glob "**/*.c" | circleci tests split --split-by=filesize | xargs gcc -c
+      - run: cd tests
       - run: sh compile.sh
       # move compiled files to specific folder and persist to workspace
       - run: mkdir output && mv *.o output
