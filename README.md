@@ -1,4 +1,4 @@
-# PAPI wrapper v1.0.0
+# PW - PAPI wrapper 1.0.0
 
 [![CircleCI](https://circleci.com/gh/markoshorro/papi_wrapper/tree/master.svg?style=shield)](https://circleci.com/gh/markoshorro/papi_wrapper/tree/master)
 
@@ -77,7 +77,7 @@ When talking about the overhead of a library, we can think about the overhead of
 
 ### Limitations
 
-With the major version 1.0.0, PAPI wrapper introduces subregions, which basically permits measuring different regions of code simoultaneously and individually. Nonetheless, if the region or subregion measured has an order of magnitude lower than the proper PAPI library cost (refer to [Overhead](#Overhead), the result will have too much noise. 
+With the major version 1.0.0, PAPI wrapper introduces subregions, which basically permits measuring different regions of code simoultaneously and individually. Nonetheless, if the region or subregion measured has an order of magnitude lower than the proper PAPI library cost (refer to [Overhead](#overhead)), the result will have too much noise. 
 
 ## Versions and changelog
 
@@ -93,7 +93,7 @@ Authors:
   * Dr. Gabriel Rodríguez
 
 ## Credits
-i
+
 This version is based on [PolyBench](https://sourceforge.net/projects/polybench/), under GPLv2 license.
 
 ## License
