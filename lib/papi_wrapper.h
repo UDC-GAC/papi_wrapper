@@ -83,6 +83,7 @@ typedef struct PW_thread_subregion
 typedef struct PW_thread_info
 {
     int *                  pw_eventset;
+    int *                  pw_eventlist;
     int                    pw_domain;
     long long *            pw_values;
     PW_thread_subregion_t *pw_subregions;
@@ -95,6 +96,8 @@ typedef struct PW_thread_info
 /* Useful macros */
 #define PW_VALUES(__pw_nthread, __pw_evid) \
     (PW_thread[__pw_nthread].pw_values[__pw_evid])
+#define PW_EVTLST(__pw_nthread, __pw_evid) \
+    (PW_thread[__pw_nthread].pw_eventlist[__pw_evid])
 #define PW_EVTSET(__pw_nthread, __pw_evid) \
     (PW_thread[__pw_nthread].pw_eventset[__pw_evid])
 #define PW_SUBREG_VAL(__pw_nthread, __pw_evid, n) \
@@ -188,8 +191,6 @@ extern int
 pw_start_counter(int __pw_evid);
 extern int
 pw_start_counter_thread(int __pw_evid, int __pw_th);
-extern int
-pw_start_all_counters();
 extern void
 pw_start_subregion(int __pw_evid, int __pw_subreg_n);
 extern void

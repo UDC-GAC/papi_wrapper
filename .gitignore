@@ -1,6 +1,12 @@
 # Prerequisites
 *.d
 
+# Build
+tests/build/*
+
+# Documentation
+doc/html/*
+
 # Object files
 *.o
 *.ko
