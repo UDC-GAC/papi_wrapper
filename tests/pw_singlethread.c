@@ -21,7 +21,7 @@ main()
     {
         if (i % 100 == 0)
         {
-            printf("x[%d]\t%d\n", x[i]);
+            printf("x[%d]\t%d\n", i, x[i]);
         }
     }
 }

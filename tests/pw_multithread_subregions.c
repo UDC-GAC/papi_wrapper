@@ -3,12 +3,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define PW_MULTITHREAD
+
 int
 main()
 {
     int N = 1000;
     int x[N];
-    pw_init_start_instruments;
+
+    pw_init_start_instruments(2);
 #pragma omp parallel for
     for (int i = 0; i < N; ++i)
     {
@@ -22,7 +25,7 @@ main()
     {
         if (i % 100 == 0)
         {
-            printf("x[%d]\t%d\n", x[i]);
+            printf("x[%d]\t%d\n", i, x[i]);
         }
     }
 }
