@@ -3,6 +3,7 @@
 
 # Build
 tests/build/*
+build/*
 
 # Documentation
 doc/html/*
