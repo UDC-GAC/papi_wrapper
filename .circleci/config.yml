@@ -4,38 +4,44 @@ workflows:
   version: 2
   dist-compile:
     jobs:
-      - compile
+      - build
       - test:
           requires:
-            - compile
+            - build
 jobs:
-  compile:
-    parallelism: 2
-    #docker:
-    #   - image: gcc:8.2
+  build:
     machine:
-      image: ubuntu-1604:201903-01
+      image: ubuntu
+
     steps:
+      # Install dependencies
+      - run: apt-get update && apt-get install -y git cmake doxygen gcc g++ clang
+      # Enable access to hardware counters
+      - run: sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
+      # Checkout repo
       - checkout
-      #split all c files based on the index ID we're running on, pass subset to gcc compile
-      # - run: circleci tests glob "**/*.c" | circleci tests split --split-by=filesize | xargs gcc -c
-      - run: cd tests
-      - run: sh compile.sh
-      # move compiled files to specific folder and persist to workspace
-      - run: mkdir output && mv *.o output
+      # Install PAPI library
+      - run: git clone https://bitbucket.org/icl/papi.git && cd papi/src && ./configure && make && make install && cd ../..
+      # Build tests
+      - run: cd tests && mkdir build && cd build && cmake .. && make
+      # move compiled files to specific folder  and persist to workspace
+      - run: mkdir output && mv tests/build/*.o output
       - persist_to_workspace:
           root: output
           paths:
             - "*.o"
   test:
-    docker:
-      - image: gcc:8.2
+    machine:
+      image: ubuntu
+      
     steps:
       # instead of checking out, restore workspace (will merge all parallel containers from previous job)
       - attach_workspace:
           at: output
-      - run: sudo sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
       - run: ls -la output
       - run: mv output/* .
-
-
+      - run:
+          name: Testing
+          command: 'exit_code=0; for test in $(find -type f -name "test_*.o");\
+          do $test > /dev/null; [ $? -eq 0 ] || echo "test failed: ${test}";\
+          exit_code=1; done; exit(exit_code);'
