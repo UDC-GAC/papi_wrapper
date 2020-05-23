@@ -2,7 +2,7 @@ version: 2
 
 workflows:
   version: 2
-  dist-compile:
+  build-test:
     jobs:
       - build
       - test:
@@ -10,14 +10,13 @@ workflows:
             - build
 jobs:
   build:
-    machine:
-      image: ubuntu
-
+    docker:
+      - image: gcc:10.1.0
     steps:
       # Install dependencies
-      - run: apt-get update && apt-get install -y git cmake doxygen gcc g++ clang
+      - run: apt update && apt upgrade && apt install -y git cmake doxygen
       # Enable access to hardware counters
-      - run: sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
+      #- run: sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
       # Checkout repo
       - checkout
       # Install PAPI library
@@ -32,8 +31,8 @@ jobs:
             - "*.o"
   test:
     machine:
-      image: ubuntu
-      
+      enabled: true
+
     steps:
       # instead of checking out, restore workspace (will merge all parallel containers from previous job)
       - attach_workspace:
