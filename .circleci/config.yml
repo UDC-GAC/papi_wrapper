@@ -48,6 +48,6 @@ jobs:
       - run: ls -la output
       - run: mv output/* .
       - run:
-          name: Testing
+          name: "Testing"
           command: 'for test in $(find -type f -name "test_*.o");
-          do $test > /dev/null; [ $? -eq 0 ] || exit(1); done;''
+          do $test > /dev/null; [ $? -eq 0 ] || exit(1); done;'
