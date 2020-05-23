@@ -17,8 +17,7 @@ jobs:
       - run:
           name: "Dependcies"
           command: 'apt update && apt upgrade && apt install -y git cmake doxygen'
-      # FIXME Enable access to hardware counters
-      #- run: sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
+
       # Checkout repo
       - checkout
       # Install PAPI library
@@ -45,9 +44,11 @@ jobs:
       # instead of checking out, restore workspace (will merge all parallel containers from previous job)
       - attach_workspace:
           at: output
+      # FIXME Enable access to hardware counters
+      - run: sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
       - run: ls -la output
       - run: mv output/* .
       - run:
           name: "Testing"
           command: 'for test in $(find -type f -name "test_*.o");
-          do $test > /dev/null; [ $? -eq 0 ] || exit(1); done;'
+          do $test > /dev/null; [ $? -eq 0 ] || exit 1; done;'
