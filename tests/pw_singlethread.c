@@ -1,4 +1,3 @@
-#include <omp.h>
 #include <papi_wrapper.h>
 #include <stdio.h>
 #include <stdlib.h>
