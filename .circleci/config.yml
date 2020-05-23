@@ -14,17 +14,25 @@ jobs:
       - image: gcc:10.1.0
     steps:
       # Install dependencies
-      - run: apt update && apt upgrade && apt install -y git cmake doxygen
-      # Enable access to hardware counters
+      - run:
+          name: "Dependcies"
+          command: 'apt update && apt upgrade && apt install -y git cmake doxygen'
+      # FIXME Enable access to hardware counters
       #- run: sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
       # Checkout repo
       - checkout
       # Install PAPI library
-      - run: git clone https://bitbucket.org/icl/papi.git && cd papi/src && ./configure && make && make install && cd ../..
+      - run: 
+          name: "PAPI Library"
+          command: "git clone https://bitbucket.org/icl/papi.git && cd papi/src && ./configure && make && make install && cd ../.."
       # Build tests
-      - run: cd tests && mkdir build && cd build && cmake .. && make
+      - run: 
+          name: "Compiling"
+          command: "cd tests && mkdir build && cd build && cmake .. && make"
       # move compiled files to specific folder  and persist to workspace
-      - run: mkdir output && mv tests/build/*.o output
+      - run:
+          name: "Move to output"
+          command: "mkdir output && mv tests/build/*.o output"
       - persist_to_workspace:
           root: output
           paths:
@@ -41,6 +49,5 @@ jobs:
       - run: mv output/* .
       - run:
           name: Testing
-          command: 'exit_code=0; for test in $(find -type f -name "test_*.o");
-          do $test > /dev/null; [ $? -eq 0 ] || echo "test failed: ${test}";
-          exit_code=1; done; exit(exit_code);'
+          command: 'for test in $(find -type f -name "test_*.o");
+          do $test > /dev/null; [ $? -eq 0 ] || exit(1); done;''
