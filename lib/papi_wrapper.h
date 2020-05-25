@@ -152,7 +152,7 @@ extern int *             pw_eventlist;
 
 /**
  * @brief Init PAPI library and prepare instruments: flush cache of all
- * threads, basically
+ * threads
  */
 #    define pw_start_instruments                                       \
         int __pw_evid;                                                 \
