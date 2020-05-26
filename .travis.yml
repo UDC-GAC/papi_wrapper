@@ -1,6 +1,7 @@
 language: c
 os: linux
 compiler: gcc
+sudo: required
 
 cache: # see https://docs.travis-ci.com/user/caching/
   - directories:
