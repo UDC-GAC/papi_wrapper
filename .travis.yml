@@ -15,7 +15,7 @@ install:
   # install into cache folder (build binaries+headers only, no sources and do NOT build there)
   - mkdir -p $HOME/.cache
 
-script: ./build_tests.sh
+script: ./build_tests.sh onlybuild
 
 after_success:
   # Create lcov report
