@@ -2,40 +2,53 @@ version: 2
 
 workflows:
   version: 2
-  dist-compile:
+  build-test:
     jobs:
-      - compile
-      - test:
-          requires:
-            - compile
+      - build
+      # - test:
+      #     requires:
+      #       - build
 jobs:
-  compile:
-    parallelism: 2
-    #docker:
-    #   - image: gcc:8.2
-    machine:
-      image: ubuntu-1604:201903-01
-    steps:
-      - checkout
-      #split all c files based on the index ID we're running on, pass subset to gcc compile
-      # - run: circleci tests glob "**/*.c" | circleci tests split --split-by=filesize | xargs gcc -c
-      - run: cd tests
-      - run: sh compile.sh
-      # move compiled files to specific folder and persist to workspace
-      - run: mkdir output && mv *.o output
-      - persist_to_workspace:
-          root: output
-          paths:
-            - "*.o"
-  test:
+  build:
     docker:
-      - image: gcc:8.2
+      - image: gcc:10.1.0
     steps:
-      # instead of checking out, restore workspace (will merge all parallel containers from previous job)
-      - attach_workspace:
-          at: output
-      - run: sudo sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
-      - run: ls -la output
-      - run: mv output/* .
+      # Install dependencies
+      - run:
+          name: "Dependcies"
+          command: "apt update && apt upgrade && apt install -y git cmake doxygen"
 
-
+      # Checkout repo
+      - checkout
+      # Install PAPI library
+      - run:
+          name: "PAPI Library"
+          command: "git clone https://bitbucket.org/icl/papi.git && cd papi/src && ./configure && make && make install && cd ../.."
+      # Build tests
+      - run:
+          name: "Building"
+          command: "chmod +x build_tests.sh ./build_tests.sh"
+      # move compiled files to specific folder  and persist to workspace
+      # - run:
+      #     name: "Move to output"
+      #     command: "mkdir output && mv tests/build/*.o papi output"
+      # - persist_to_workspace:
+      #     root: output
+      #     paths:
+      #       - "*.o"
+  # test:
+  #   machine:
+  #     enabled: true
+  #   steps:
+  #     # instead of checking out, restore workspace (will merge all parallel containers from previous job)
+  #     - attach_workspace:
+  #         at: output
+  #     # FIXME Enable access to hardware counters
+  #     - run: sudo sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
+  #     - run: sudo add-apt-repository ppa:ubuntu-toolchain-r/test && sudo apt update
+  #     - run: ls -la output
+  #     - run: mv output/* .
+  #     - run:
+  #         name: "Testing"
+  #         command: 'for test in $(find -type f -name "test_*.o");
+  #         do $test > /dev/null; [ $? -eq 0 ] || exit 1; done;'

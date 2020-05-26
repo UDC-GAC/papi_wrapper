@@ -34,6 +34,7 @@
 #    define PW_D_LOW 0x01
 #    define PW_D_MED 0x02
 #    define PW_D_HIGH 0x03
+#    define PW_D_WARNING 0x04
 
 #    define PW_SNG_EXC 0x10
 #    define PW_ALL_EXC 0x11
@@ -132,11 +133,11 @@ typedef struct PW_thread_info
 #        endif
 #    endif
 
-/* some other declarations */
+/* Some declarations */
 extern int               __PW_NSUBREGIONS;
 extern PW_thread_info_t *PW_thread;
 extern int *             pw_eventlist;
-
+extern int               pw_counters_threadid;
 /**
  * @brief Set thread for measuring
  */
@@ -152,7 +153,7 @@ extern int *             pw_eventlist;
 
 /**
  * @brief Init PAPI library and prepare instruments: flush cache of all
- * threads, basically
+ * threads
  */
 #    define pw_start_instruments                                       \
         int __pw_evid;                                                 \
@@ -177,6 +178,9 @@ extern int *             pw_eventlist;
         pw_init_instruments;                            \
         pw_start_instruments;
 
+/**
+ * @brief Init for a concrete thread
+ */
 #    define pw_start_instruments_loop(th)                              \
         int __pw_evid;                                                 \
         for (__pw_evid = 0; pw_eventlist[__pw_evid] != 0; __pw_evid++) \
@@ -227,22 +231,22 @@ extern int *             pw_eventlist;
 /* Low-level function declarations */
 extern void
 pw_prepare_instruments();
-extern int
-pw_start_counter(int __pw_evid);
-extern int
-pw_start_counter_thread(int __pw_evid, int __pw_th);
-extern void
-pw_begin_counter_subregion(int __pw_evid, int __pw_subreg_n);
-extern void
-pw_stop_counter(int __pw_evid);
-extern void
-pw_stop_counter_thread(int __pw_evid, int __pw_th);
-extern void
-pw_end_counter_subregion(int __pw_evid, int __pw_subreg_n);
 extern void
 pw_init();
 extern void
 pw_close();
+extern int
+pw_start_counter(int __pw_evid);
+extern void
+pw_stop_counter(int __pw_evid);
+extern int
+pw_start_counter_thread(int __pw_evid, int __pw_th);
+extern void
+pw_stop_counter_thread(int __pw_evid, int __pw_th);
+extern void
+pw_begin_counter_subregion(int __pw_evid, int __pw_subreg_n);
+extern void
+pw_end_counter_subregion(int __pw_evid, int __pw_subreg_n);
 extern void
 pw_print();
 extern void
