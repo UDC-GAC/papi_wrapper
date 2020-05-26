@@ -5,7 +5,7 @@ set -eo pipefail
 testing=$1
 
 # Install PAPI library
-#git clone https://bitbucket.org/icl/papi.git && cd papi/src && ./configure && make && sudo make install && cd ../..
+git clone https://bitbucket.org/icl/papi.git && cd papi/src && ./configure && make && sudo make install && cd ../..
 
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 sudo bash -c "echo -1 > /proc/sys/kernel/perf_event_paranoid"
