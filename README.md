@@ -37,7 +37,9 @@ pw_print_instruments; /* print results */
 
 This way, it is only needed to add the header `#include <papi_wrapper.h>` to
 the source code and compile with `-I/source/to/papi-wrapper papi_wrapper.c
--lpapi` .markoshorro#8648
+-lpapi`:
+
+``` 
 #include <papi_wrapper.h>
 ...
 pw_init_instruments(number_of_subregions); /* initialize counters */
