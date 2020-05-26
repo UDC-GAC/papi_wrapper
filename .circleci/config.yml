@@ -26,8 +26,8 @@ jobs:
           command: "git clone https://bitbucket.org/icl/papi.git && cd papi/src && ./configure && make && make install && cd ../.."
       # Build tests
       - run:
-          name: "Compiling"
-          command: "cd tests && mkdir build && cd build && cmake .. && make"
+          name: "Building"
+          command: "chmod +x build_tests.sh ./build_tests.sh"
       # move compiled files to specific folder  and persist to workspace
       # - run:
       #     name: "Move to output"
