@@ -4,6 +4,9 @@ set -eo pipefail
 
 testing=$1
 
+# Install PAPI library
+git clone https://bitbucket.org/icl/papi.git && cd papi/src && ./configure && make && make install && cd ../..
+
 mkdir -p build && cd build
 
 # Configure
