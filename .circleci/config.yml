@@ -27,7 +27,7 @@ jobs:
       # Build tests
       - run:
           name: "Building"
-          command: "chmod +x build_tests.sh ./build_tests.sh"
+          command: "chmod +x build_tests.sh && ./build_tests.sh building"
       # move compiled files to specific folder  and persist to workspace
       # - run:
       #     name: "Move to output"
