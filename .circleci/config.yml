@@ -21,4 +21,4 @@ jobs:
       # Build tests
       - run:
           name: "Building tests"
-          command: "chmod +x build_tests.sh && sudo -E env 'PATH=$PATH' ./build_tests.sh building no"
+          command: "chmod +x build_tests.sh && ./build_tests.sh building no"
