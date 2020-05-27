@@ -1,0 +1,24 @@
+version: 2
+
+workflows:
+  version: 2
+  builds:
+    jobs:
+      - build-gcc
+
+jobs:
+  build-gcc:
+    docker:
+      - image: gcc:10.1.0
+      - image: gcc:9
+    steps:
+      # Install dependencies
+      - run:
+          name: "Dependencies"
+          command: "apt update && apt upgrade -y && apt install -y sudo git cmake doxygen"
+      # Checkout repo
+      - checkout
+      # Build tests
+      - run:
+          name: "Building tests"
+          command: "chmod +x build_tests.sh && ./build_tests.sh building no"
