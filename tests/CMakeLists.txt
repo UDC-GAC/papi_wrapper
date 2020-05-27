@@ -1,4 +1,4 @@
-set(CMAKE_C_FLAGS " -Wall ")
+set(CMAKE_C_FLAGS " -Wall -DPW_CSV ")
 set(PW_LIB "../lib/papi_wrapper.c")
 
 # Requirements
