@@ -1,4 +1,4 @@
-set(CMAKE_C_FLAGS " -Wall ")
+set(CMAKE_C_FLAGS " -Wall -DPW_CSV ")
 set(PW_LIB "../lib/papi_wrapper.c")
 
 # Requirements
@@ -20,6 +20,7 @@ endif()
 include_directories(../lib)
 
 link_libraries(papi)
+link_libraries(coverage_config)
 
 # Test singlethread
 add_executable(test_pw_singlethread.o ${PW_LIB} pw_simple.c)

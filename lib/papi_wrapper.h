@@ -39,7 +39,7 @@
 #    define PW_SNG_EXC 0x10
 #    define PW_ALL_EXC 0x11
 
-#    define PW_NUM_EVTSET 30
+#    define PW_NUM_EVTSET 256
 #    define PW_MAX_COUNTERS 96
 
 #    define PW_SUCCESS 0x0
@@ -69,6 +69,16 @@
 /* Default domain (-DPW_DOM) for each EventSet */
 #    if !defined(PW_DOM)
 #        define PW_DOM PAPI_DOM_KERNEL
+#    endif
+
+/* Default comma separator for CSV format */
+#    if !defined(PW_CSV_SEPARATOR)
+#        define PW_CSV_SEPARATOR " "
+#    endif
+
+#    if defined(PW_CSV)
+#        undef PW_CSV_SEPARATOR
+#        define PW_CSV_SEPARATOR ","
 #    endif
 
 typedef struct PW_thread_subregion

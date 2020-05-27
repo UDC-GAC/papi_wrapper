@@ -403,6 +403,7 @@ pw_init()
 #    pragma omp barrier
 #    pragma omp critical
             {
+                __pw_nthread  = omp_get_thread_num();
                 int __pw_evid = 0;
                 for (k = 0; _pw_eventlist[k] != NULL; ++k)
                 {
@@ -493,6 +494,7 @@ pw_init()
                 }
 #    endif
             }
+#    pragma omp barrier
 #else
     PW_thread  = (PW_thread_info_t *)malloc(sizeof(PW_thread_info_t));
     if (__PW_NSUBREGIONS != -1)
@@ -579,6 +581,7 @@ pw_start_counter(int __pw_evid)
 #    pragma omp parallel
     {
         int __pw_nthread = omp_get_thread_num();
+#    pragma omp barrier
 #    if !defined(PW_MULTITHREAD)
         if (__pw_nthread == pw_counters_threadid)
         {
@@ -589,6 +592,7 @@ pw_start_counter(int __pw_evid)
 #if defined(PW_MULTITHREAD)
 #    pragma omp critical
             {
+                __pw_nthread = omp_get_thread_num();
                 if ((__pw_retval =
                          PAPI_add_event(PW_EVTSET(__pw_nthread, __pw_evid),
                                         PW_EVTLST(__pw_nthread, __pw_evid)))
@@ -936,16 +940,26 @@ void
 pw_print()
 {
     int verbose = 0;
+#if defined(PW_VERBOSE) && !defined(PW_CSV)
+    verbose = 1;
+#endif
 #if defined(_OPENMP)
 #    if !defined(PW_MULTITHREAD)
 #        pragma omp parallel
     {
         if (omp_get_thread_num() == pw_counters_threadid)
         {
-#        if defined(PW_VERBOSE)
-            verbose = 1;
-#        endif
 #    endif
+#endif
+            int __pw_evid;
+
+#if defined(PW_CSV)
+            printf("PAPI_thread");
+            for (__pw_evid = 0; _pw_eventlist[__pw_evid] != NULL; ++__pw_evid)
+            {
+                printf("%s%s", PW_CSV_SEPARATOR, _pw_eventlist[__pw_evid]);
+            }
+            printf("\n");
 #endif
 #if defined(PW_MULTITHREAD)
             int __pw_nthreads = 1;
@@ -957,40 +971,41 @@ pw_print()
                 }
             }
             int __pw_nthread = 0;
-#    if defined(PW_CSV)
-            printf("PAPI_thread,");
-            for (__pw_evid = 0; _pw_eventlist[__pw_evid] != NULL; ++__pw_evid)
-            {
-                printf("%s,", _pw_eventlist[__pw_evid]);
-            }
-            printf("NIL\n");
-#    endif
 #    pragma omp for ordered schedule(static, 1)
             for (__pw_nthread = 0; __pw_nthread < __pw_nthreads; ++__pw_nthread)
             {
                 int __pw_evid;
-                printf("PAPI thread %2d\t", __pw_nthread);
+#    if defined(PW_CSV)
+                printf("%d", __pw_nthread);
+#    else
+        printf("PAPI thread %2d\t", __pw_nthread);
+#    endif
                 for (__pw_evid = 0; PW_EVTLST(__pw_nthread, __pw_evid) != 0;
                      ++__pw_evid)
                 {
                     if (verbose) printf("%s=", _pw_eventlist[__pw_evid]);
-                    printf("%llu ", PW_VALUES(__pw_nthread, __pw_evid));
+                    printf("%s%llu",
+                           PW_CSV_SEPARATOR,
+                           PW_VALUES(__pw_nthread, __pw_evid));
                     if (verbose) printf("\n");
                 }
                 printf("\n");
             }
 #    pragma omp barrier
-#    pragma omp             master
+#    pragma omp master
             {
                 free(PW_thread);
             }
 #else
-    int __pw_evid;
+#    if defined(PW_CSV)
+    printf("%d", pw_counters_threadid);
+#    else
     printf("PAPI thread %2d\t", pw_counters_threadid);
+#    endif
     for (__pw_evid = 0; pw_eventlist[__pw_evid] != 0; ++__pw_evid)
     {
         if (verbose) printf("%s=", _pw_eventlist[__pw_evid]);
-        printf("%llu ", pw_values[__pw_evid]);
+        printf("%s%llu", PW_CSV_SEPARATOR, pw_values[__pw_evid]);
         if (verbose) printf("\n");
     }
     printf("\n");
@@ -1019,16 +1034,26 @@ pw_print_sub()
                  PAPI_EINVAL);
     }
     int verbose = 0;
+#if defined(PW_VERBOSE) && !defined(PW_CSV)
+    verbose = 1;
+#endif
 #if defined(_OPENMP)
 #    if !defined(PW_MULTITHREAD)
 #        pragma omp parallel
     {
         if (omp_get_thread_num() == pw_counters_threadid)
         {
-#        if defined(PW_VERBOSE)
-            verbose = 1;
-#        endif
 #    endif
+#endif
+            int __pw_evid;
+
+#if defined(PW_CSV)
+            printf("PAPI_thread");
+            for (__pw_evid = 0; _pw_eventlist[__pw_evid] != NULL; ++__pw_evid)
+            {
+                printf("%s%s", PW_CSV_SEPARATOR, _pw_eventlist[__pw_evid]);
+            }
+            printf("\n");
 #endif
 #if defined(PW_MULTITHREAD)
             int __pw_nthreads = 1;
@@ -1048,13 +1073,17 @@ pw_print_sub()
                 for (__pw_nthread = 0; __pw_nthread < __pw_nthreads;
                      ++__pw_nthread)
                 {
-                    int __pw_evid;
-                    printf("PAPI thread %2d\t", __pw_nthread);
+#    if defined(PW_CSV)
+                    printf("%d", __pw_nthread);
+#    else
+            printf("PAPI thread %2d\t", __pw_nthread);
+#    endif
                     for (__pw_evid = 0; PW_EVTLST(__pw_nthread, __pw_evid) != 0;
                          ++__pw_evid)
                     {
                         if (verbose) printf("%s=", _pw_eventlist[__pw_evid]);
-                        printf("%llu ",
+                        printf("%s%llu",
+                               PW_CSV_SEPARATOR,
                                PW_SUBREG_VAL(
                                    __pw_nthread, __pw_evid, __pw_subreg));
                         if (verbose) printf("\n");
@@ -1064,17 +1093,20 @@ pw_print_sub()
                 printf("== END SUBREGION %d ==\n", __pw_subreg);
             }
 #    pragma omp barrier
-#    pragma omp             master
+#    pragma omp master
             {
                 free(PW_thread);
             }
 #else
-    int __pw_evid;
+#    if defined(PW_CSV)
+    printf("%d", pw_counters_threadid);
+#    else
     printf("PAPI thread %2d\t", pw_counters_threadid);
+#    endif
     for (__pw_evid = 0; pw_eventlist[__pw_evid] != 0; ++__pw_evid)
     {
         if (verbose) printf("%s=", _pw_eventlist[__pw_evid]);
-        printf("%llu ", pw_values[__pw_evid]);
+        printf("%s%llu", PW_CSV_SEPARATOR, pw_values[__pw_evid]);
         if (verbose) printf("\n");
     }
     printf("\n");
