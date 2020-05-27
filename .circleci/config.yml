@@ -14,8 +14,8 @@ jobs:
     steps:
       # Install dependencies
       - run:
-          name: "Dependcies"
-          command: "apt update && apt upgrade -y && apt install -y git cmake doxygen"
+          name: "Dependencies"
+          command: "apt update && apt upgrade -y && apt install -y sudo git cmake doxygen"
       # Checkout repo
       - checkout
       # Build tests
@@ -29,8 +29,8 @@ jobs:
     steps:
       # Install dependencies
       - run:
-          name: "Dependcies"
-          command: "apt update && apt upgrade -y && apt install -y git cmake doxygen"
+          name: "Dependencies"
+          command: "apt update && apt upgrade -y && apt install -y sudo git cmake doxygen"
       # Checkout repo
       - checkout
       # Build tests
