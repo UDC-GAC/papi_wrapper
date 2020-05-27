@@ -16,7 +16,7 @@ install:
   # install into cache folder (build binaries+headers only, no sources and do NOT build there)
   - mkdir -p $HOME/.cache
 
-script: sudo -E env "PATH=$PATH" ./build_tests.sh building
+script: sudo -E env "PATH=$PATH" ./build_tests.sh building yes
 
 after_success:
   # FIXME: this is running in local right now

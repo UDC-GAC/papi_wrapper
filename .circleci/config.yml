@@ -4,27 +4,12 @@ workflows:
   version: 2
   builds:
     jobs:
-      - build-gcc10
-      - build-gcc9
+      - build-gcc
 
 jobs:
-  build-gcc10:
+  build-gcc:
     docker:
       - image: gcc:10.1.0
-    steps:
-      # Install dependencies
-      - run:
-          name: "Dependencies"
-          command: "apt update && apt upgrade -y && apt install -y sudo git cmake doxygen"
-      # Checkout repo
-      - checkout
-      # Build tests
-      - run:
-          name: "Building"
-          command: "chmod +x build_tests.sh && ./build_tests.sh building"
-
-  build-gcc9:
-    docker:
       - image: gcc:9
     steps:
       # Install dependencies
@@ -35,5 +20,6 @@ jobs:
       - checkout
       # Build tests
       - run:
-          name: "Building"
-          command: "chmod +x build_tests.sh && ./build_tests.sh building"
+          name: "Building tests"
+          command: "chmod +x build_tests.sh && sudo -E env "PATH=$PATH" ./build_tests.sh building no"
+
