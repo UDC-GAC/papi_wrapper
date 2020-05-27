@@ -16,7 +16,7 @@ jobs:
       # Install dependencies
       - run:
           name: "Dependcies"
-          command: "apt update && apt upgrade && apt install -y git cmake doxygen"
+          command: "apt update && apt upgrade -y && apt install -y git cmake doxygen"
 
       # Checkout repo
       - checkout
