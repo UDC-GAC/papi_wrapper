@@ -179,8 +179,8 @@ MIT License.
 
 [circleci-badge]:  https://circleci.com/gh/markoshorro/papi_wrapper.svg?style=svg
 [circleci-link]:   https://circleci.com/gh/markoshorro/papi_wrapper
-[travis-badge]:    https://travis-ci.org/markoshorro/papi_wrapper.svg?branch=develop
+[travis-badge]:    https://travis-ci.org/markoshorro/papi_wrapper.svg?branch=master
 [travis-link]:     https://travis-ci.org/markoshorro/papi_wrapper
 [license-badge]:   https://img.shields.io/badge/license-MIT-007EC7.svg
-[codecov-badge]:   https://codecov.io/gh/markoshorro/papi_wrapper/branch/develop/graph/badge.svg
+[codecov-badge]:   https://codecov.io/gh/markoshorro/papi_wrapper/branch/master/graph/badge.svg
 [codecov-link]:    https://codecov.io/gh/markoshorro/papi_wrapper
