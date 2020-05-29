@@ -8,16 +8,20 @@
 int
 main()
 {
-    long long N = 1000000;
+    long long N = 1;
     double    x[N];
-    pw_init_start_instruments;
-#pragma omp parallel for
-    for (int i = 0; i < N; ++i)
+    int       i;
+    pw_init_instruments;
+#pragma omp parallel
     {
-        x[i] = i * 42.3;
-        x[i] = i / 29.8;
+        pw_start_instruments_loop(omp_get_thread_num());
+        for (i = 0; i < N; ++i)
+        {
+            x[i] = i * 42.3;
+            x[i] = i / 29.8;
+        }
+        pw_stop_instruments_loop(omp_get_thread_num());
     }
-    pw_stop_instruments;
     pw_print_instruments;
 
     /* avoid code elimination */

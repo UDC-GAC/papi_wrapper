@@ -39,8 +39,8 @@
 #    define PW_SNG_EXC 0x10
 #    define PW_ALL_EXC 0x11
 
-#    define PW_NUM_EVTSET 256
-#    define PW_MAX_COUNTERS 96
+#    define PW_NUM_EVTSET 4096
+#    define PW_MAX_COUNTERS 4096
 
 #    define PW_SUCCESS 0x0
 #    define PW_ERR 0x1
@@ -110,8 +110,8 @@ typedef struct PW_thread_info
 /* Useful macros */
 #    define PW_VALUES(__pw_nthread, __pw_evid) \
         (PW_thread[__pw_nthread].pw_values[__pw_evid])
-#    define PW_EVTLST(__pw_nthread, __pw_evid) \
-        (PW_thread[__pw_nthread].pw_eventlist[__pw_evid])
+#    define PW_EVTLST(__pw_nthread, __pw_evid) pw_eventlist[__pw_evid]
+//(PW_thread[__pw_nthread].pw_eventlist[__pw_evid])
 #    define PW_EVTSET(__pw_nthread, __pw_evid) \
         (PW_thread[__pw_nthread].pw_eventset[__pw_evid])
 #    define PW_SUBREG_VAL(__pw_nthread, __pw_evid, n) \
@@ -196,7 +196,8 @@ extern int               pw_counters_threadid;
         for (__pw_evid = 0; pw_eventlist[__pw_evid] != 0; __pw_evid++) \
         {                                                              \
             pw_prepare_instruments();                                  \
-            if (pw_start_counter_thread(__pw_evid, th)) continue;
+            pw_start_counter_thread(__pw_evid, th);
+// if (pw_start_counter_thread(__pw_evid, th)) continue;
 
 /**
  * @brief Stop hardware counters
