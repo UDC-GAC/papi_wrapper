@@ -1,7 +1,6 @@
-# PW - PAPI wrapper 1.0.0
+# PW - PAPI wrapper 1.0.1
 
 [![Build Status][travis-badge]][travis-link]
-[![CircleCI][circleci-badge]][circleci-link]
 [![codecov][codecov-badge]][codecov-link]
 [![MIT License][license-badge]](LICENSE.md)
 
@@ -12,10 +11,10 @@ simplifies setting up low-level features of PAPI such as domain, granularity or
 overflow.
 
 PAPI's low-level API allows programmers to program different hardware counters
-while executing a program. However, programming those counters may introduce a 
-lot of complex code onto the original program. Besides, configuring properly 
+while executing a program. However, programming those counters may introduce a
+lot of complex code onto the original program. Besides, configuring properly
 PAPI may be tedious. For these reasons we have created a set of macros in order
-to simplify the problem, while configuring PAPI at compilation time: either 
+to simplify the problem, while configuring PAPI at compilation time: either
 using flags or files.
 
 This interface works for multithreaded programs using OpenMP; actually this was
@@ -27,7 +26,7 @@ the main reason for developing this interface. See [Usage](#usage) and
 It is only needed to rewrite our code as ( `<papi.h>` header files are already
 included in `papi_wrapper` ):
 
-``` 
+```
 #include <papi_wrapper.h>
 ...
 pw_init_instruments; /* initialize counters */
@@ -43,7 +42,7 @@ This way, it is only needed to add the header `#include <papi_wrapper.h>` to
 the source code and compile with `-I/source/to/papi-wrapper papi_wrapper.c
 -lpapi`. Another way to use this wrapper library, using subregions, could be:
 
-``` 
+```
 #include <papi_wrapper.h>
 ...
 pw_init_start_instruments_sub(2); /* initialize counters */
@@ -67,7 +66,7 @@ TL; DR: macros available in `papi_wrapper` :
  * `pw_set_thread_report` : set thread to measure when single thread.
  * `pw_init_instruments` : init PAPI and flush caches.
  * `pw_init_start_instruments` : wrapper for `pw_init_instruments` and
-`pw_start_instruments` 
+`pw_start_instruments`
  * `pw_init_start_instruments_sub(n)` : init library and set number of regions
    to measure
  * `pw_start_instruments` : start counting.
@@ -105,7 +104,7 @@ High-level configuration parameters:
    crash. Need to be compiled with `-fopenmp` .
  * `-DPW_VERBOSE` - disabled by default. More text in the output and errors.
  * `-DPW_CSV` - disabled by default. Print in CSV format using comma
-( `-DPW_CSV_SEPARATOR=","` ) as divider where first row contains the thread number 
+( `-DPW_CSV_SEPARATOR=","` ) as divider where first row contains the thread number
    and the names of the hardware counters used, containing the following rows
    each thread and its counter values.
 
@@ -133,7 +132,7 @@ reliability](https://groups.google.com/a/icl.utk.edu/forum/#!searchin/ptools-per
 When talking about the overhead of a library, we can think about the overhead
 of using it regarding execution time or memory. In any case, overheads:
 
- * Costs of the PAPI library: initializing the library, starting counters, 
+ * Costs of the PAPI library: initializing the library, starting counters,
    stoping them. For further details refer to `papi_cost` utility.
  * Costs of PAPI wrapper: iterating over the list of events to measure. Each
    counter is measured individually, so there is no concurrency at all when it
@@ -149,7 +148,7 @@ List of known issues when testing:
 basically permits measuring different regions of code simoultaneously and
 individually. Nonetheless, if the region or subregion measured has an order of
 magnitude lower than the proper PAPI library cost (refer to
-[Overhead](#overhead)), the result will have too much noise. 
+[Overhead](#overhead)), the result will have too much noise.
 
 ## Versions and changelog
 
@@ -177,8 +176,6 @@ This version is based on
 
 MIT License.
 
-[circleci-badge]:  https://circleci.com/gh/markoshorro/papi_wrapper.svg?style=svg
-[circleci-link]:   https://circleci.com/gh/markoshorro/papi_wrapper
 [travis-badge]:    https://travis-ci.org/markoshorro/papi_wrapper.svg?branch=master
 [travis-link]:     https://travis-ci.org/markoshorro/papi_wrapper
 [license-badge]:   https://img.shields.io/badge/license-MIT-007EC7.svg
