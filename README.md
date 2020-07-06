@@ -1,4 +1,4 @@
-# PW - PAPI wrapper 1.0.0
+# PW - PAPI wrapper 1.0.1
 
 [![Build Status][travis-badge]][travis-link]
 [![codecov][codecov-badge]][codecov-link]
