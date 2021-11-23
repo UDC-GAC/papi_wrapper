@@ -1,4 +1,4 @@
-# PW - PAPI wrapper 1.0.2
+# PW - PAPI wrapper 1.1.0
 
 [![codecov][codecov-badge]][codecov-link]
 [![MIT License][license-badge]](LICENSE.md)
