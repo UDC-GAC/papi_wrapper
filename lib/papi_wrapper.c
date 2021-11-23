@@ -1,6 +1,6 @@
 /**
  * papi_wrapper.c
- * Copyright (c) 2018 - 2020 Marcos Horro <marcos.horro@udc.gal>
+ * Copyright (c) 2018 - 2021. Universidade da Coruña.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,8 +20,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * Authors: Marcos Horro
- *          Gabriel Rodríguez
+ * Authors: Marcos Horro        <marcos.horro@udc.es>
+ *          Gabriel Rodríguez   <gabriel.rodriguez@udc.es>
  */
 
 #define _GNU_SOURCE
@@ -934,13 +934,11 @@ pw_end_counter_subregion(int __pw_evid, int __pw_subreg_n)
 #endif
 }
 
-/**
- * @brief Print values of each thread with format
- */
-void
-pw_print_values_format()
-{
-}
+#ifdef PW_FILE
+#    define PRINT_OUT(...) fprintf(fp, __VA_ARGS__)
+#else
+#    define PRINT_OUT(...) printf(__VA_ARGS__)
+#endif
 
 /**
  * @brief Printing the values of the counters
@@ -949,6 +947,9 @@ pw_print_values_format()
 void
 pw_print()
 {
+#ifdef PW_FILE
+    PAPI_WRAPPER_OPEN_RESULTS_FILE;
+#endif
     int verbose = 0;
 #if defined(PW_VERBOSE) && !defined(PW_CSV)
     verbose = 1;
@@ -963,13 +964,13 @@ pw_print()
 #endif
             int __pw_evid;
 
-#if defined(PW_CSV)
-            printf("PAPI_thread");
+#if defined(PW_CSV) && !defined(PW_NO_CSV_HEADER)
+            PRINT_OUT("PAPI_thread");
             for (__pw_evid = 0; _pw_eventlist[__pw_evid] != NULL; ++__pw_evid)
             {
-                printf("%s%s", PW_CSV_SEPARATOR, _pw_eventlist[__pw_evid]);
+                PRINT_OUT("%s%s", PW_CSV_SEPARATOR, _pw_eventlist[__pw_evid]);
             }
-            printf("\n");
+            PRINT_OUT("\n");
 #endif
 #if defined(PW_MULTITHREAD)
             int __pw_nthreads = 1;
@@ -986,20 +987,20 @@ pw_print()
             {
                 int __pw_evid;
 #    if defined(PW_CSV)
-                printf("%d", __pw_nthread);
+                PRINT_OUT("%d", __pw_nthread);
 #    else
-        printf("PAPI thread %2d\t", __pw_nthread);
+        PRINT_OUT("PAPI thread %2d\t", __pw_nthread);
 #    endif
                 for (__pw_evid = 0; PW_EVTLST(__pw_nthread, __pw_evid) != 0;
                      ++__pw_evid)
                 {
-                    if (verbose) printf("%s=", _pw_eventlist[__pw_evid]);
-                    printf("%s%llu",
-                           PW_CSV_SEPARATOR,
-                           PW_VALUES(__pw_nthread, __pw_evid));
-                    if (verbose) printf("\n");
+                    if (verbose) PRINT_OUT("%s=", _pw_eventlist[__pw_evid]);
+                    PRINT_OUT("%s%llu",
+                              PW_CSV_SEPARATOR,
+                              PW_VALUES(__pw_nthread, __pw_evid));
+                    if (verbose) PRINT_OUT("\n");
                 }
-                printf("\n");
+                PRINT_OUT("\n");
             }
 #    pragma omp barrier
 #    pragma omp master
@@ -1008,17 +1009,17 @@ pw_print()
             }
 #else
 #    if defined(PW_CSV)
-    printf("%d", pw_counters_threadid);
+    PRINT_OUT("%d", pw_counters_threadid);
 #    else
-    printf("PAPI thread %2d\t", pw_counters_threadid);
+    PRINT_OUT("PAPI thread %2d\t", pw_counters_threadid);
 #    endif
     for (__pw_evid = 0; pw_eventlist[__pw_evid] != 0; ++__pw_evid)
     {
-        if (verbose) printf("%s=", _pw_eventlist[__pw_evid]);
-        printf("%s%llu", PW_CSV_SEPARATOR, pw_values[__pw_evid]);
-        if (verbose) printf("\n");
+        if (verbose) PRINT_OUT("%s=", _pw_eventlist[__pw_evid]);
+        PRINT_OUT("%s%llu", PW_CSV_SEPARATOR, pw_values[__pw_evid]);
+        if (verbose) PRINT_OUT("\n");
     }
-    printf("\n");
+    PRINT_OUT("\n");
 #endif
 #if defined(_OPENMP)
 #    if !defined(PW_MULTITHREAD)
@@ -1026,6 +1027,9 @@ pw_print()
     }
 #        pragma omp barrier
 #    endif
+#endif
+#ifdef PW_FILE
+    PAPI_WRAPPER_CLOSE_RESULTS_FILE;
 #endif
 }
 

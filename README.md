@@ -1,6 +1,5 @@
-# PW - PAPI wrapper 1.0.1
+# PW - PAPI wrapper 1.1.0
 
-[![Build Status][travis-badge]][travis-link]
 [![codecov][codecov-badge]][codecov-link]
 [![MIT License][license-badge]](LICENSE.md)
 
@@ -107,6 +106,8 @@ High-level configuration parameters:
 ( `-DPW_CSV_SEPARATOR=","` ) as divider where first row contains the thread number
    and the names of the hardware counters used, containing the following rows
    each thread and its counter values.
+ * `-DPW_FILE` - print output to file specified by `-DPW_FILENAME=<file>` (default to
+   `/tmp/__tmp_papi_wrapper.output`), instead of standard output.
 
 Low-level configuration parameters (refer to [PAPI](https://icl.utk.edu/papi/)
 for further information):
@@ -176,8 +177,6 @@ This version is based on
 
 MIT License.
 
-[travis-badge]:    https://travis-ci.org/markoshorro/papi_wrapper.svg?branch=master
-[travis-link]:     https://travis-ci.org/markoshorro/papi_wrapper
 [license-badge]:   https://img.shields.io/badge/license-MIT-007EC7.svg
 [codecov-badge]:   https://codecov.io/gh/markoshorro/papi_wrapper/branch/master/graph/badge.svg
 [codecov-link]:    https://codecov.io/gh/markoshorro/papi_wrapper
