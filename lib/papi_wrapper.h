@@ -1,6 +1,6 @@
 /**
  * papi_wrapper.h
- * Copyright (c) 2018 - 2020 Marcos Horro <marcos.horro@udc.gal>
+ * Copyright (c) 2018 - 2021 Universidade da Coruña.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,8 +20,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * Authors: Marcos Horro
- *          Gabriel Rodríguez
+ * Authors: Marcos Horro        <marcos.horro@udc.es>
+ *          Gabriel Rodríguez   <gabriel.rodriguez@udc.es>
  */
 
 #if !defined(PAPI_WRAPPER_H)
@@ -81,6 +81,19 @@
 #        define PW_CSV_SEPARATOR ","
 #    endif
 
+#    if defined(PW_FILE)
+#        if !defined(PW_FILENAME)
+#            define PW_FILENAME "/tmp/__tmp_papi_wrapper.output"
+#        endif
+#    endif
+
+#    define PAPI_WRAPPER_OPEN_RESULTS_FILE \
+        FILE *fp;                          \
+        fp = fopen(PW_FILENAME, "a");      \
+        if (fp == NULL) exit(-1);
+
+#    define PAPI_WRAPPER_CLOSE_RESULTS_FILE fclose(fp);
+
 typedef struct PW_thread_subregion
 {
     long long  pw_delta;
@@ -96,10 +109,10 @@ typedef struct PW_thread_subregion
  */
 typedef struct PW_thread_info
 {
-    int *                  pw_eventset;
-    int *                  pw_eventlist;
+    int                   *pw_eventset;
+    int                   *pw_eventlist;
     int                    pw_domain;
-    long long *            pw_values;
+    long long             *pw_values;
     PW_thread_subregion_t *pw_subregions;
 #    if defined(PW_SAMPLING)
     int        pw_overflow_enabled;
@@ -146,7 +159,7 @@ typedef struct PW_thread_info
 /* Some declarations */
 extern int               __PW_NSUBREGIONS;
 extern PW_thread_info_t *PW_thread;
-extern int *             pw_eventlist;
+extern int              *pw_eventlist;
 extern int               pw_counters_threadid;
 /**
  * @brief Set thread for measuring
@@ -197,7 +210,6 @@ extern int               pw_counters_threadid;
         {                                                              \
             pw_prepare_instruments();                                  \
             pw_start_counter_thread(__pw_evid, th);
-// if (pw_start_counter_thread(__pw_evid, th)) continue;
 
 /**
  * @brief Stop hardware counters
